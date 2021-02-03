@@ -1,4 +1,4 @@
-package com.kutay.MANPORT.ws.models;
+package com.kutay.MANPORT.ws.domain;
 
 public enum RowStatus {
     ACTIVE,DELETED

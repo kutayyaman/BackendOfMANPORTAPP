@@ -1,6 +1,7 @@
 package com.kutay.MANPORT.ws.api;
 
-import com.kutay.MANPORT.ws.models.User;
+import com.kutay.MANPORT.ws.domain.User;
+import com.kutay.MANPORT.ws.dto.UserDTO;
 import com.kutay.MANPORT.ws.service.IUserService;
 import com.kutay.MANPORT.ws.shared.GenericResponse;
 import com.kutay.MANPORT.ws.util.ApiPaths;
@@ -26,7 +27,7 @@ public class UserController {
 
     @PostMapping()
     @ApiOperation(value = "Create User Operation", response = User.class)
-    public GenericResponse createUser(@RequestBody User user) {
+    public GenericResponse createUser(@RequestBody UserDTO user) {
         userService.save(user);
         GenericResponse response = new GenericResponse("user created");
         return response;

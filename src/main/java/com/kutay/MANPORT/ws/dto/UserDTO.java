@@ -1,18 +1,17 @@
-package com.kutay.MANPORT.ws.models;
+package com.kutay.MANPORT.ws.dto;
 
+import com.kutay.MANPORT.ws.domain.RowStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Data
 @ApiModel(value = "User Data Transfer Object")
-@Entity
-@Table(name = "USER_TABLE")
-public class User extends BaseEntity {
+public class UserDTO {
     @ApiModelProperty(required = true,value = "name")
     private String name;
     @ApiModelProperty(required = true,value = "surname")
@@ -30,6 +29,19 @@ public class User extends BaseEntity {
     private String registrationDate;
     @ApiModelProperty(required = false,value = "birthdayDate")
     private String birthdayDate;
+    @ApiModelProperty(required = true,value = "id")
+    private Long id;
+    @ApiModelProperty(required = false,value = "createdDate")
+    private String createdDate;
+    @ApiModelProperty(required = false,value = "modifiedDate")
+    private String modifiedDate;
+    @ApiModelProperty(required = false,value = "createdBy")
+    private String createdBy;
+    @ApiModelProperty(required = false,value = "modifiedBy")
+    private String modifiedBy;
+    @ApiModelProperty(required = false,value = "rowStatus")
+    @Enumerated(EnumType.STRING)
+    private RowStatus rowStatus = RowStatus.ACTIVE;
 
     @Override
     public String toString() { //Normalde @Data ile bu toStringde oluşturuluyor ancak ben BaseEntity'dende gelen ozelliklerin ekrana yazdirilmasini istedigim icin kendim ezdim ve en sona super.toString() ekledim.

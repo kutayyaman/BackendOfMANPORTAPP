@@ -1,4 +1,4 @@
-package com.kutay.MANPORT.ws.models;
+package com.kutay.MANPORT.ws.domain;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,17 +10,11 @@ import javax.persistence.*;
 public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @ApiModelProperty(required = true,value = "id")
     private Long id;
-    @ApiModelProperty(required = false,value = "createdDate")
     private String createdDate;
-    @ApiModelProperty(required = false,value = "modifiedDate")
     private String modifiedDate;
-    @ApiModelProperty(required = false,value = "createdBy")
     private String createdBy;
-    @ApiModelProperty(required = false,value = "modifiedBy")
     private String modifiedBy;
-    @ApiModelProperty(required = false,value = "rowStatus")
     @Enumerated(EnumType.STRING)
     private RowStatus rowStatus = RowStatus.ACTIVE;
 }
