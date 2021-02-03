@@ -1,6 +1,5 @@
-package com.kutay.ECommercialApp.ws.models;
+package com.kutay.MANPORT.ws.models;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.kutay.ECommercialApp.ws.config;
+package com.kutay.MANPORT.ws.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +19,7 @@ import java.time.LocalDate;
 public class SwaggerConfig {
     ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("MyECommercialApp API Reference")
+                .title("MANPORT API Reference")
                 .version("1.0.0")
                 .build();
     }

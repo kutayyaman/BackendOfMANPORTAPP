@@ -1,4 +1,4 @@
-package com.kutay.ECommercialApp.ws.util;
+package com.kutay.MANPORT.ws.util;
 
 public final class ApiPaths {
 

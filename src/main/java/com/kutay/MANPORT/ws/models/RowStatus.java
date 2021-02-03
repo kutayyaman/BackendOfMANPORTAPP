@@ -1,4 +1,4 @@
-package com.kutay.ECommercialApp.ws.models;
+package com.kutay.MANPORT.ws.models;
 
 public enum RowStatus {
     ACTIVE,DELETED

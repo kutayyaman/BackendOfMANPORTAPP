@@ -1,9 +1,9 @@
-package com.kutay.ECommercialApp.ws.api;
+package com.kutay.MANPORT.ws.api;
 
-import com.kutay.ECommercialApp.ws.models.User;
-import com.kutay.ECommercialApp.ws.service.IUserService;
-import com.kutay.ECommercialApp.ws.shared.GenericResponse;
-import com.kutay.ECommercialApp.ws.util.ApiPaths;
+import com.kutay.MANPORT.ws.models.User;
+import com.kutay.MANPORT.ws.service.IUserService;
+import com.kutay.MANPORT.ws.shared.GenericResponse;
+import com.kutay.MANPORT.ws.util.ApiPaths;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;

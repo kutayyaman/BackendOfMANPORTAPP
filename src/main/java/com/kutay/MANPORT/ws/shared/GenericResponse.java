@@ -1,4 +1,4 @@
-package com.kutay.ECommercialApp.ws.shared;
+package com.kutay.MANPORT.ws.shared;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
