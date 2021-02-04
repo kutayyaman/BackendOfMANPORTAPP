@@ -2,7 +2,8 @@ package com.kutay.MANPORT.ws.service;
 
 import com.kutay.MANPORT.ws.domain.User;
 import com.kutay.MANPORT.ws.dto.UserDTO;
+import org.springframework.http.ResponseEntity;
 
 public interface IUserService {
-    void save(UserDTO addressAlarm);
+    ResponseEntity<?> save(UserDTO userDTO);
 }

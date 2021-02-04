@@ -9,6 +9,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -27,9 +29,7 @@ public class UserController {
 
     @PostMapping()
     @ApiOperation(value = "Create User Operation", response = UserDTO.class)
-    public GenericResponse createUser(@RequestBody UserDTO user) {
-        userService.save(user);
-        GenericResponse response = new GenericResponse("user created");
-        return response;
+    public ResponseEntity<?> createUser(@RequestBody UserDTO user) {
+        return userService.save(user);
     }
 }
