@@ -8,18 +8,23 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.NotNull;
 
 @Data
 @ApiModel(value = "User Data Transfer Object")
 public class UserDTO {
     @ApiModelProperty(required = true,value = "name")
+    @NotNull
     private String name;
     @ApiModelProperty(required = true,value = "surname")
+    @NotNull
     private String surname;
     @ApiModelProperty(required = true,value = "email")
     @Column(unique = true)
+    @NotNull
     private String email;
     @ApiModelProperty(required = true,value = "password")
+    @NotNull
     private String password;
     @ApiModelProperty(required = false,value = "lastLoginDate")
     private String lastLoginDate;

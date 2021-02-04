@@ -32,38 +32,11 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ResponseEntity<?> save(UserDTO userDTO) {
-        ApiError apiError = validateUserDTO(userDTO);
-        if (apiError != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
-        }
         setCreatedDateOfUserDTO(userDTO);
         encodeThePasswordOfUserDTO(userDTO);
         User user = modelMapper.map(userDTO, User.class);
         userRepository.save(user);
         return ResponseEntity.ok(new GenericResponse("user created"));
-    }
-
-    private ApiError validateUserDTO(UserDTO userDTO) {
-        ApiError error = new ApiError(400,"Validation error", ApiPaths.UserCtrl.CTRL);
-        Map<String, String> validationErrors = new HashMap<>();
-
-        String name = userDTO.getName();
-        String surname = userDTO.getSurname();
-        String mail = userDTO.getEmail();
-        String password = userDTO.getPassword();
-
-        if (name == null || name.isEmpty()) {
-            validationErrors.put("name", "name cannot be null");
-        }
-        if (surname == null || surname.isEmpty()) {
-            validationErrors.put("surname", "surname cannot be null");
-        }
-
-        if(!validationErrors.isEmpty()){
-            error.setValidationErrors(validationErrors);
-            return error;
-        }
-        return null;
     }
 
     private void encodeThePasswordOfUserDTO(UserDTO user) {
