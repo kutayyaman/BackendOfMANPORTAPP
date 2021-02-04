@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -17,10 +17,16 @@ public class User extends BaseEntity {
     @Column(unique = true)
     private String email;
     private String password;
-    private Long defaultAddressId;
     private String lastLoginDate;
-    private String registrationDate;
     private String birthdayDate;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "USER_ROLE",
+            joinColumns = @JoinColumn(name = "USER_ID"),
+            inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+    private Set<Role> roles = new HashSet<>();
+    @OneToMany(mappedBy = "applicationManager", fetch = FetchType.LAZY)
+    private Set<Application> applications = new HashSet<>();
+
 
     @Override
     public String toString() { //Normalde @Data ile bu toStringde oluşturuluyor ancak ben BaseEntity'dende gelen ozelliklerin ekrana yazdirilmasini istedigim icin kendim ezdim ve en sona super.toString() ekledim.
@@ -29,9 +35,6 @@ public class User extends BaseEntity {
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", defaultAddressId=" + defaultAddressId +
-                ", lastLoginDate='" + lastLoginDate + '\'' +
-                ", registrationDate='" + registrationDate + '\'' +
                 ", birthdayDate='" + birthdayDate + '\'' +
                 '}' + " " + super.toString();
     }

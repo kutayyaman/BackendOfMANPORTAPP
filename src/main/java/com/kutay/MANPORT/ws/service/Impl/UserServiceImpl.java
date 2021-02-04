@@ -24,7 +24,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void save(UserDTO userDTO) {
-        setRegistrationDateAndCreatedDateOfUserDTO(userDTO);
+        setCreatedDateOfUserDTO(userDTO);
         encodeThePasswordOfUserDTO(userDTO);
         User user = modelMapper.map(userDTO,User.class);
         userRepository.save(user);
@@ -35,10 +35,8 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(encryptedPassword);
     }
 
-    private void setRegistrationDateAndCreatedDateOfUserDTO(UserDTO user) {
+    private void setCreatedDateOfUserDTO(UserDTO user) {
         String currentDateAsAString = CurrentDateCreator.currentDateAsString();
-
-        user.setRegistrationDate(currentDateAsAString);
         user.setCreatedDate(currentDateAsAString);
     }
 }

@@ -21,12 +21,8 @@ public class UserDTO {
     private String email;
     @ApiModelProperty(required = true,value = "password")
     private String password;
-    @ApiModelProperty(required = false,value = "defaultAddressId")
-    private Long defaultAddressId;
     @ApiModelProperty(required = false,value = "lastLoginDate")
     private String lastLoginDate;
-    @ApiModelProperty(required = false,value = "registrationDate")
-    private String registrationDate;
     @ApiModelProperty(required = false,value = "birthdayDate")
     private String birthdayDate;
     @ApiModelProperty(required = true,value = "id")
@@ -50,9 +46,7 @@ public class UserDTO {
                 ", surname='" + surname + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", defaultAddressId=" + defaultAddressId +
                 ", lastLoginDate='" + lastLoginDate + '\'' +
-                ", registrationDate='" + registrationDate + '\'' +
                 ", birthdayDate='" + birthdayDate + '\'' +
                 '}' + " " + super.toString();
     }

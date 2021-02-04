@@ -26,7 +26,7 @@ public class UserController {
 
 
     @PostMapping()
-    @ApiOperation(value = "Create User Operation", response = User.class)
+    @ApiOperation(value = "Create User Operation", response = UserDTO.class)
     public GenericResponse createUser(@RequestBody UserDTO user) {
         userService.save(user);
         GenericResponse response = new GenericResponse("user created");
