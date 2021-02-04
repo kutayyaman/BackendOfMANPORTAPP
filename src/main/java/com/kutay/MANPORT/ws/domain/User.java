@@ -14,7 +14,6 @@ import java.util.Set;
 public class User extends BaseEntity {
     private String name;
     private String surname;
-    @Column(unique = true)
     private String email;
     private String password;
     private String lastLoginDate;

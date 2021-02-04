@@ -1,5 +1,6 @@
 package com.kutay.MANPORT.ws.dto;
 
+import com.kutay.MANPORT.ws.MyAnnotations.UniqueEmail;
 import com.kutay.MANPORT.ws.domain.RowStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,23 +9,31 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Data
 @ApiModel(value = "User Data Transfer Object")
 public class UserDTO {
     @ApiModelProperty(required = true,value = "name")
     @NotNull
+    @Size(min = 4, max = 255)
     private String name;
     @ApiModelProperty(required = true,value = "surname")
     @NotNull
+    @Size(min = 4, max = 255)
     private String surname;
     @ApiModelProperty(required = true,value = "email")
     @Column(unique = true)
     @NotNull
+    @Email
+    @UniqueEmail // bu validation'i kendim yazdim yani hazir kutuphaden gelen bir validation degil.
     private String email;
     @ApiModelProperty(required = true,value = "password")
     @NotNull
+    @Size(min = 8, max = 255)
     private String password;
     @ApiModelProperty(required = false,value = "lastLoginDate")
     private String lastLoginDate;

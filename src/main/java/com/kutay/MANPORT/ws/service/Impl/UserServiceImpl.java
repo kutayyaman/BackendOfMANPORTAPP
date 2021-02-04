@@ -9,14 +9,11 @@ import com.kutay.MANPORT.ws.shared.GenericResponse;
 import com.kutay.MANPORT.ws.util.ApiPaths;
 import com.kutay.MANPORT.ws.util.CurrentDateCreator;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -47,5 +44,10 @@ public class UserServiceImpl implements IUserService {
     private void setCreatedDateOfUserDTO(UserDTO user) {
         String currentDateAsAString = CurrentDateCreator.currentDateAsString();
         user.setCreatedDate(currentDateAsAString);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
