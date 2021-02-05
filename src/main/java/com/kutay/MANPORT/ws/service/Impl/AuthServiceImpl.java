@@ -1,6 +1,7 @@
 package com.kutay.MANPORT.ws.service.Impl;
 
 import com.kutay.MANPORT.ws.domain.User;
+import com.kutay.MANPORT.ws.dto.UserDTO;
 import com.kutay.MANPORT.ws.error.ApiError;
 import com.kutay.MANPORT.ws.service.IAuthService;
 import com.kutay.MANPORT.ws.service.IUserService;
@@ -45,10 +46,11 @@ public class AuthServiceImpl implements IAuthService {
             ApiError error = new ApiError(401, "Unauthorized request", ApiPaths.AuthCtrl.CTRL);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         }
-        Map<String,String> responseBody = new HashMap<>();
-        responseBody.put("name", user.getName());
-        responseBody.put("surname",user.getSurname());
-        responseBody.put("email",user.getEmail());
-        return ResponseEntity.ok(responseBody);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setName(user.getName());
+        userDTO.setSurname(user.getSurname());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setRowStatus(null);
+        return ResponseEntity.ok(userDTO);
     }
 }

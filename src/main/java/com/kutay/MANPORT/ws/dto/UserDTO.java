@@ -1,5 +1,6 @@
 package com.kutay.MANPORT.ws.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kutay.MANPORT.ws.MyAnnotations.UniqueEmail;
 import com.kutay.MANPORT.ws.domain.RowStatus;
 import io.swagger.annotations.ApiModel;
@@ -16,6 +17,7 @@ import javax.validation.constraints.Size;
 
 @Data
 @ApiModel(value = "User Data Transfer Object")
+@JsonInclude(JsonInclude.Include.NON_NULL) // yani cevap olarak UserDTO dondugumuz zaman diyelimki rowStatus null ozaman bunu geriye donme yani rowStatus'u cikart bunun icinden demis oluyoruz
 public class UserDTO {
     @ApiModelProperty(required = true,value = "name")
     @NotNull(message = "{manportapp.constraint.name.NotNull.message}")
@@ -50,7 +52,6 @@ public class UserDTO {
     @ApiModelProperty(required = false,value = "modifiedBy")
     private String modifiedBy;
     @ApiModelProperty(required = false,value = "rowStatus")
-    @Enumerated(EnumType.STRING)
     private RowStatus rowStatus = RowStatus.ACTIVE;
 
     @Override
