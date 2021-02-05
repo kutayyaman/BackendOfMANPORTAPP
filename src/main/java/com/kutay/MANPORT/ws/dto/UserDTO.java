@@ -18,7 +18,7 @@ import javax.validation.constraints.Size;
 @ApiModel(value = "User Data Transfer Object")
 public class UserDTO {
     @ApiModelProperty(required = true,value = "name")
-    @NotNull
+    @NotNull(message = "{manportapp.constraint.name.NotNull.message}")
     @Size(min = 4, max = 255)
     private String name;
     @ApiModelProperty(required = true,value = "surname")

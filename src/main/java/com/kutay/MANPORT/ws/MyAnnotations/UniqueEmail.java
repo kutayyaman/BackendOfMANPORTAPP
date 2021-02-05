@@ -16,7 +16,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME) // RUNTIME yani calisma aninda devreye girecegini soyluyoruz.
 @Constraint(validatedBy = {UniqueEmailValidator.class})
 public @interface UniqueEmail {
-    String message() default "Mail must be unique";
+    String message() default "{manportapp.constraint.email.UniqueEmail.message}";
 
     Class<?>[] groups() default {};
 
