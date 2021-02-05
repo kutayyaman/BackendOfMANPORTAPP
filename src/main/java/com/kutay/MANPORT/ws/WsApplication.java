@@ -1,7 +1,12 @@
 package com.kutay.MANPORT.ws;
 
+import com.kutay.MANPORT.ws.domain.User;
+import com.kutay.MANPORT.ws.dto.UserDTO;
+import com.kutay.MANPORT.ws.repository.UserRepository;
+import com.kutay.MANPORT.ws.service.IUserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -20,5 +25,22 @@ public class WsApplication {
 		ModelMapper modelMapper = new ModelMapper();
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT); //ENUM'lari convert ederken sikinti vermemesi icn bu gerekliymis
 		return modelMapper;
+	}
+
+	@Bean
+	CommandLineRunner createInitialUsers(IUserService userService){ //Spring projesi ayaga kalktigi zaman otomatik olarak bunun run methodu çalışır ve biz bunu başlangıç verileri eklemek için kullanıcaz.
+		return new CommandLineRunner() {
+			@Override
+			public void run(String... args) throws Exception {
+				if(userService.findByEmail("yamankutay1@gmail.com")==null){
+					UserDTO user = new UserDTO();
+					user.setEmail("yamankutay1@gmail.com");
+					user.setPassword("12345678");
+					user.setName("kutay");
+					user.setSurname("yaman");
+					userService.save(user);
+				}
+			}
+		};
 	}
 }

@@ -8,4 +8,8 @@ public final class ApiPaths {
         public static final String CTRL = BASE_PATH + "/users";
     }
 
+    public static final class AuthCtrl {
+        public static final String CTRL = BASE_PATH + "/auth";
+    }
+
 }

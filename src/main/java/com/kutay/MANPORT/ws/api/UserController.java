@@ -35,10 +35,9 @@ public class UserController {
 
 
     @PostMapping()
-    @ApiOperation(value = "Create User Operation", response = UserDTO.class)
-    public GenericResponse createUser(@Valid @RequestBody UserDTO user) {
-        userService.save(user);
-        return new GenericResponse("user created");
+    @ApiOperation(value = "Create User Operation", response = ResponseEntity.class)
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO user) {
+        return userService.save(user);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
