@@ -1,5 +1,7 @@
 package com.kutay.MANPORT.ws.api;
 
+import com.kutay.MANPORT.ws.MyAnnotations.CurrentUser;
+import com.kutay.MANPORT.ws.domain.User;
 import com.kutay.MANPORT.ws.error.ApiError;
 import com.kutay.MANPORT.ws.service.IAuthService;
 import com.kutay.MANPORT.ws.service.IUserService;
@@ -8,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
@@ -27,8 +30,8 @@ public class AuthController {
 
     @PostMapping()
     @ApiOperation(value = "Handle Authentication Operation", response = ResponseEntity.class)
-    public ResponseEntity<?> handleAuthentication(@RequestHeader(name = "Authorization") String authorization) {
-        return authService.auth(authorization);
+    public ResponseEntity<?> handleAuthentication(@CurrentUser User user) { //@CurrentUser anatasyonunu ben olusturdum.
+        return authService.auth(user);
     }
 
 }

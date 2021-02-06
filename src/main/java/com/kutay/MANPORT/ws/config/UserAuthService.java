@@ -22,6 +22,6 @@ public class UserAuthService implements UserDetailsService {
         if(user == null){
             throw new UsernameNotFoundException("Mail does not exist");
         }
-        return new ManportUserDetails(user);
+        return user;
     }
 }
