@@ -40,16 +40,4 @@ public class UserController {
         return userService.save(user);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    // bu UserController classinda MethodArgumentNotValidException firlatilirsa bu yazdigim method ile yakala demis oluyoruz.
-    @ResponseStatus(HttpStatus.BAD_REQUEST) // bunu yapmasaydik geriye 200 OK donerdi default olarak.
-    public ApiError handleValidationException(MethodArgumentNotValidException exception) {
-        ApiError error = new ApiError(400, "Validation error", ApiPaths.UserCtrl.CTRL);
-        Map<String, String> validationErrors = new HashMap<>();
-        for (FieldError fieldError : exception.getBindingResult().getFieldErrors()) {
-            validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
-        }
-        error.setValidationErrors(validationErrors);
-        return error;
-    }
 }
