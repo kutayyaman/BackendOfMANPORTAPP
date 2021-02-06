@@ -27,7 +27,7 @@ public class AuthController {
 
     @PostMapping()
     @ApiOperation(value = "Handle Authentication Operation", response = ResponseEntity.class)
-    public ResponseEntity<?> handleAuthentication(@RequestHeader(name = "Authorization", required = false) String authorization) {
+    public ResponseEntity<?> handleAuthentication(@RequestHeader(name = "Authorization") String authorization) {
         return authService.auth(authorization);
     }
 
