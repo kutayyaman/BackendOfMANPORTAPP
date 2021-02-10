@@ -28,7 +28,7 @@ public class UserDTO {
     @Size(min = 4, max = 255)
     private String surname;
     @ApiModelProperty(required = true,value = "email")
-    @Column(unique = true)
+    //@Column(unique = true)
     @NotNull
     @Email
     @UniqueEmail // bu validation'i kendim yazdim yani hazir kutuphaden gelen bir validation degil.

@@ -30,7 +30,7 @@ public class UserServiceImpl implements IUserService {
         encodeThePasswordOfUserDTO(userDTO);
         User user = modelMapper.map(userDTO, User.class);
         userRepository.save(user);
-        return ResponseEntity.ok(new GenericResponse("user created"));
+        return ResponseEntity.ok(new GenericResponse("User Created"));
     }
 
     private void encodeThePasswordOfUserDTO(UserDTO user) {
