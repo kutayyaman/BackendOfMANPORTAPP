@@ -18,6 +18,8 @@ public class Application extends BaseEntity {
     private int lineCountOfFrontend;
     @OneToMany(mappedBy = "application", fetch = FetchType.LAZY)
     private List<Job> jobs = new ArrayList<>();
+    @OneToMany(mappedBy = "application", fetch = FetchType.LAZY)
+    private List<Issue> issues = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User applicationManager;

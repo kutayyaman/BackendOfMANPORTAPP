@@ -16,4 +16,7 @@ public class Issue extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "jobId")
     private Job job;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "applicationId")
+    private Application application;
 }
