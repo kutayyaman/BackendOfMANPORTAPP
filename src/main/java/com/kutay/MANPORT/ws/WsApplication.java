@@ -10,7 +10,6 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
 import java.util.*;
@@ -35,6 +34,20 @@ public class WsApplication {
         return new CommandLineRunner() {
             @Override
             public void run(String... args) throws Exception {
+                createUsers();
+                createCountries();
+                createPlants();
+                createServerRooms();
+                createBackends();
+                createFrontends();
+                createDatabases();
+                createTeams();
+                createApplications();
+                createJobs();
+                createIssues();
+            }
+
+            private void createUsers() {
                 if (userService.findByEmail("yamankutay1@gmail.com") == null) {
                     UserDTO user = new UserDTO();
                     user.setEmail("yamankutay1@gmail.com");
@@ -43,6 +56,9 @@ public class WsApplication {
                     user.setSurname("yaman");
                     userService.save(user);
                 }
+            }
+
+            private void createCountries() {
                 if (countryRepository.count() <= 0) {
                     List<Country> countryList = new ArrayList<Country>();
                     for (int i = 0; i < 10; i++) {
@@ -52,6 +68,9 @@ public class WsApplication {
                     }
                     countryRepository.saveAll(countryList);
                 }
+            }
+
+            private void createPlants() {
                 if (plantRepository.count() <= 0) {
                     List<Plant> plantList = new ArrayList<Plant>();
                     List<Country> countryList = new ArrayList<Country>();
@@ -64,6 +83,9 @@ public class WsApplication {
                     }
                     plantRepository.saveAll(plantList);
                 }
+            }
+
+            private void createServerRooms() {
                 if (serverRoomRepository.count() <= 0) {
                     List<ServerRoom> serverRoomList = new ArrayList<>();
                     List<Plant> plantList = plantRepository.findAll();
@@ -77,6 +99,9 @@ public class WsApplication {
                     }
                     serverRoomRepository.saveAll(serverRoomList);
                 }
+            }
+
+            private void createBackends() {
                 if (backendRepository.count() <= 0) {
                     List<Backend> backendList = new ArrayList<>();
                     for (int i = 0; i < 10; i++) {
@@ -86,6 +111,9 @@ public class WsApplication {
                     }
                     backendRepository.saveAll(backendList);
                 }
+            }
+
+            private void createFrontends() {
                 if (frontendRepository.count() <= 0) {
                     List<Frontend> frontendList = new ArrayList<>();
                     for (int i = 0; i < 10; i++) {
@@ -95,6 +123,9 @@ public class WsApplication {
                     }
                     frontendRepository.saveAll(frontendList);
                 }
+            }
+
+            private void createDatabases() {
                 if (databaseRepository.count() <= 0) {
                     List<Database> databaseList = new ArrayList<>();
                     for (int i = 0; i < 10; i++) {
@@ -104,6 +135,9 @@ public class WsApplication {
                     }
                     databaseRepository.saveAll(databaseList);
                 }
+            }
+
+            private void createTeams() {
                 if (teamRepository.count() <= 0) {
                     List<Team> teamList = new ArrayList<>();
                     for (int i = 0; i < 10; i++) {
@@ -113,6 +147,9 @@ public class WsApplication {
                     }
                     teamRepository.saveAll(teamList);
                 }
+            }
+
+            private void createApplications() {
                 if (applicationRepository.count() <= 0) {
                     List<Application> applicationList = new ArrayList<>();
                     List<Backend> backendList = new ArrayList<>();
@@ -163,7 +200,9 @@ public class WsApplication {
                     }
                     applicationRepository.saveAll(applicationList);
                 }
+            }
 
+            private void createJobs() {
                 if (jobRepository.count() <= 0) {
                     List<Job> jobList = new ArrayList<>();
                     List<Application> applicationList = applicationRepository.findAll();
@@ -175,7 +214,9 @@ public class WsApplication {
                     }
                     jobRepository.saveAll(jobList);
                 }
+            }
 
+            private void createIssues() throws InterruptedException {
                 if (issueRepository.count() <= 0) {
                     List<Issue> issueLists = new ArrayList<>();
                     List<Job> jobList = jobRepository.findAll();
