@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,9 +27,9 @@ public class User extends BaseEntity implements UserDetails {
     @JoinTable(name = "USER_ROLE",
             joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-    private Set<Role> roles = new HashSet<>();
+    private Collection<Role> roles = new ArrayList<>();
     @OneToMany(mappedBy = "applicationManager", fetch = FetchType.LAZY)
-    private Set<Application> applications = new HashSet<>();
+    private Collection<Application> applications = new ArrayList<>();
 
 
     @Override

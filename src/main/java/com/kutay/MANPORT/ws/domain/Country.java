@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,9 +16,9 @@ import java.util.Set;
 public class Country extends BaseEntity {
     private String name;
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "countries")
-    private Set<Application> applications = new HashSet<>();
+    private Collection<Application> applications = new ArrayList<>();
     @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
-    private Set<ServerRoom> serverRooms;
+    private Collection<ServerRoom> serverRooms = new ArrayList<>();
     @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
-    private Set<Plant> plants = new HashSet<>();
+    private Collection<Plant> plants = new ArrayList<>();
 }
