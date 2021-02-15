@@ -16,7 +16,7 @@ public final class ApiPaths {
         public static final String CTRL = BASE_PATH+"/issue";
     }
 
-    public static final class ApplicationCtrl {
+    public static final class ApplicationSummaryCtrl {
         public static final String CTRL = BASE_PATH+"/applicationsummary";
     }
 
