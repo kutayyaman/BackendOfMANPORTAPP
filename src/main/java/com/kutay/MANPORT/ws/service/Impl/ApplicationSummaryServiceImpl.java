@@ -40,17 +40,17 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
         for (Application application : applicationListOfAll) {
             List<Country> countryListOfApplication = findCountryListOfApplication(application);
             DataForGetApplicationsSummaryModel dataForResultList = new DataForGetApplicationsSummaryModel();
-            for(Country countryOfApplication : countryListOfApplication){
-                List<Server> serverListOfApplicationInACountry = findServerListOfApplicationInACountry(application,countryOfApplication);
+            for (Country countryOfApplication : countryListOfApplication) {
+                List<Server> serverListOfApplicationInACountry = findServerListOfApplicationInACountry(application, countryOfApplication);
                 ACountryWithServers aCountryWithServers = new ACountryWithServers();
                 aCountryWithServers.setCountryId(countryOfApplication.getId());
                 aCountryWithServers.setCountryName(countryOfApplication.getName());
-                for(Server server : serverListOfApplicationInACountry){
+                for (Server server : serverListOfApplicationInACountry) {
                     JobNameListInAServerModel jobNameListInAServerModel = new JobNameListInAServerModel();
                     jobNameListInAServerModel.setServerId(server.getId());
                     jobNameListInAServerModel.setServerName(server.getName());
-                    List<JobImplement> jobImplements = findJobImplementsListOfApplicationInAServer(application,server);
-                    for(JobImplement jobImplement : jobImplements){
+                    List<JobImplement> jobImplements = findJobImplementsListOfApplicationInAServer(application, server);
+                    for (JobImplement jobImplement : jobImplements) {
                         JobInterface jobInterface = jobImplement.getJobInterface();
                         String jobName = jobInterface.getName();
                         jobNameListInAServerModel.getJobNames().add(jobName);
@@ -67,14 +67,14 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
         return result;
     }
 
-    private List<JobImplement> findJobImplementsListOfApplicationInAServer(Application application, Server server){
+    private List<JobImplement> findJobImplementsListOfApplicationInAServer(Application application, Server server) {
         List<JobImplement> result = new ArrayList<>();
         List<JobImplement> jobImplementsInServer = server.getJobImplements();
         List<JobInterface> jobInterfacesOfApplication = application.getJobInterfaces();
 
-        for(JobImplement jobImplement : jobImplementsInServer){
-            for(JobInterface jobInterface : jobInterfacesOfApplication){
-                if(jobInterface.getId() == jobImplement.getJobInterface().getId()){
+        for (JobImplement jobImplement : jobImplementsInServer) {
+            for (JobInterface jobInterface : jobInterfacesOfApplication) {
+                if (jobInterface.getId() == jobImplement.getJobInterface().getId()) {
                     result.add(jobImplement);
                     break;
                 }
