@@ -28,8 +28,6 @@ public class User extends BaseEntity implements UserDetails {
             joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
     private Collection<Role> roles = new ArrayList<>();
-    @OneToMany(mappedBy = "applicationManager", fetch = FetchType.LAZY)
-    private Collection<Application> applications = new ArrayList<>();
 
 
     @Override

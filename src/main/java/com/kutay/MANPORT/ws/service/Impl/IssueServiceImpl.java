@@ -32,9 +32,9 @@ public class IssueServiceImpl implements IIssueService {
             TopIssueDTO topIssueDTO = new TopIssueDTO();
             topIssueDTO.setId(issue.getId());
             topIssueDTO.setCreatedDate(issue.getCreatedDate());
-            topIssueDTO.setApplicationFullName(issue.getApplication().getFullName());
+           /* topIssueDTO.setApplicationFullName(issue.getApplication().getFullName());
             topIssueDTO.setApplicationShortName(issue.getApplication().getShortName());
-            topIssueDTO.setJobName(issue.getJob().getName());
+            topIssueDTO.setJobName(issue.getJob().getName());*/
             top3TopIssuesToReturn.add(topIssueDTO);
         }
         return top3TopIssuesToReturn;

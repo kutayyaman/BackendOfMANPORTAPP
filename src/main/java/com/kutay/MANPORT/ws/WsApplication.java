@@ -29,13 +29,14 @@ public class WsApplication {
         return modelMapper;
     }
 
+    //, CountryRepository countryRepository, PlantRepository plantRepository, ServerRoomRepository serverRoomRepository, BackendRepository backendRepository, FrontendRepository frontendRepository, DatabaseRepository databaseRepository, TeamRepository teamRepository, ApplicationRepository applicationRepository, JobRepository jobRepository
     @Bean
-    CommandLineRunner createInitialUsers(IUserService userService, CountryRepository countryRepository, PlantRepository plantRepository, ServerRoomRepository serverRoomRepository, BackendRepository backendRepository, FrontendRepository frontendRepository, DatabaseRepository databaseRepository, TeamRepository teamRepository, ApplicationRepository applicationRepository, JobRepository jobRepository, IssueRepository issueRepository) { //Spring projesi ayaga kalktigi zaman otomatik olarak bunun run methodu çalışır ve biz bunu başlangıç verileri eklemek için kullanıcaz.
+    CommandLineRunner createInitialUsers(IUserService userService, IssueRepository issueRepository) { //Spring projesi ayaga kalktigi zaman otomatik olarak bunun run methodu çalışır ve biz bunu başlangıç verileri eklemek için kullanıcaz.
         return new CommandLineRunner() {
             @Override
             public void run(String... args) throws Exception {
                 createUsers();
-                createCountries();
+                /*createCountries();
                 createPlants();
                 createServerRooms();
                 createBackends();
@@ -43,7 +44,7 @@ public class WsApplication {
                 createDatabases();
                 createTeams();
                 createApplications();
-                createJobs();
+                createJobs();*/
                 createIssues();
             }
 
@@ -58,7 +59,7 @@ public class WsApplication {
                 }
             }
 
-            private void createCountries() {
+           /* private void createCountries() {
                 if (countryRepository.count() <= 0) {
                     List<Country> countryList = new ArrayList<Country>();
                     for (int i = 0; i < 10; i++) {
@@ -214,20 +215,20 @@ public class WsApplication {
                     }
                     jobRepository.saveAll(jobList);
                 }
-            }
+            }*/
 
             private void createIssues() throws InterruptedException {
                 if (issueRepository.count() <= 0) {
                     List<Issue> issueLists = new ArrayList<>();
-                    List<Job> jobList = jobRepository.findAll();
-                    List<Application> applicationList = applicationRepository.findAll();
+                    //List<Job> jobList = jobRepository.findAll();
+                    //List<Application> applicationList = applicationRepository.findAll();
                     for (int i = 0; i < 10; i++) {
                         Issue issue = new Issue();
                         issue.setName("Issue" + (i + 1));
                         issue.setDescription("Issue" + (i + 1) + "'in sorunu var");
                         issue.setImpact("Etki" + (i + 1) + " (BU IMPACT TAM OLARAK NEYDI BAK BELKI ENUM olması gerebilir.)");
-                        issue.setJob(jobList.get(i));
-                        issue.setApplication(applicationList.get(i));
+                        //issue.setJob(jobList.get(i));
+                        //issue.setApplication(applicationList.get(i));
                         issueLists.add(issue);
                         Thread.sleep(1000);
                     }
