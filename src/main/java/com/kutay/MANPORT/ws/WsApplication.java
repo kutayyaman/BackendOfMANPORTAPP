@@ -134,15 +134,13 @@ public class WsApplication {
             private void createIssues() throws InterruptedException {
                 if (issueRepository.count() <= 0) {
                     List<Issue> issueLists = new ArrayList<>();
-                    //List<Job> jobList = jobRepository.findAll();
-                    //List<Application> applicationList = applicationRepository.findAll();
+                    List<JobImplement> jobImplements = jobImplementsRepository.findAll();
                     for (int i = 0; i < 10; i++) {
                         Issue issue = new Issue();
                         issue.setName("Issue" + (i + 1));
-                        issue.setDescription("Issue" + (i + 1) + "'in sorunu var");
-                        issue.setImpact("Etki" + (i + 1) + " (BU IMPACT TAM OLARAK NEYDI BAK BELKI ENUM olması gerebilir.)");
-                        //issue.setJob(jobList.get(i));
-                        //issue.setApplication(applicationList.get(i));
+                        issue.setImpactType(ImpactType.LOW);
+                        issue.setJobImplement(jobImplements.get(i % 3));
+                        issue.setDescription(issue.getJobImplement().getId().toString()+" idli Jobda sorun var");
                         issueLists.add(issue);
                         Thread.sleep(1000);
                     }

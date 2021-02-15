@@ -9,5 +9,5 @@ import java.util.List;
 public class JobNameListInAServerModel {
     private Long serverId;
     private String serverName;
-    private List<String> jobNames = new ArrayList<>();
+    private List<JobNameAndIdWithIssuesModel> jobAndIssues = new ArrayList<>();
 }

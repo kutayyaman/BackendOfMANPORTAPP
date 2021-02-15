@@ -1,8 +1,10 @@
 package com.kutay.MANPORT.ws.service.Impl;
 
 import com.kutay.MANPORT.ws.domain.*;
+import com.kutay.MANPORT.ws.dto.IssueDTO;
 import com.kutay.MANPORT.ws.models.*;
 import com.kutay.MANPORT.ws.repository.ApplicationRepository;
+import com.kutay.MANPORT.ws.repository.IssueRepository;
 import com.kutay.MANPORT.ws.service.IApplicationSummaryService;
 import com.kutay.MANPORT.ws.service.IServerService;
 import org.modelmapper.ModelMapper;
@@ -18,17 +20,19 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
     private final ApplicationRepository applicationRepository;
     private final IServerService serverService;
     private final ModelMapper modelMapper;
+    private final IssueRepository issueRepository;
 
-    public ApplicationSummaryServiceImpl(ApplicationRepository applicationRepository, IServerService serverService, ModelMapper modelMapper) {
+    public ApplicationSummaryServiceImpl(ApplicationRepository applicationRepository, IServerService serverService, ModelMapper modelMapper, IssueRepository issueRepository) {
         this.applicationRepository = applicationRepository;
         this.serverService = serverService;
         this.modelMapper = modelMapper;
+        this.issueRepository = issueRepository;
     }
 
     @Override
     public GetApplicationsSummaryModel getApplicationsSummary() {
         List<Application> applicationListOfAll = applicationRepository.findAll();
-        GetApplicationsSummaryModel result = new GetApplicationsSummaryModel();
+        GetApplicationsSummaryModel result;
 
 
         result = getServerDatasWithCountrFromApplications(applicationListOfAll);
@@ -53,7 +57,19 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
                     for (JobImplement jobImplement : jobImplements) {
                         JobInterface jobInterface = jobImplement.getJobInterface();
                         String jobName = jobInterface.getName();
-                        jobNameListInAServerModel.getJobNames().add(jobName);
+
+                        JobNameAndIdWithIssuesModel jobNameAndIssuesModel = new JobNameAndIdWithIssuesModel();
+                        jobNameAndIssuesModel.setJobName(jobName);
+                        jobNameAndIssuesModel.setJobId(jobImplement.getId());
+                        List<Issue> issues= findIssuesByJobImplement(jobImplement);
+                        for(Issue issue : issues){
+                            IssueDTO issueDTO = new IssueDTO();
+                            issueDTO.setImpact(issue.getImpactType().toString());
+                            issueDTO.setDescription(issue.getDescription());
+                            issueDTO.setName(issue.getName());
+                            jobNameAndIssuesModel.getIssueDTOList().add(issueDTO);
+                        }
+                        jobNameListInAServerModel.getJobAndIssues().add(jobNameAndIssuesModel);
                     }
                     aCountryWithServers.getJobNameListInAServerModelList().add(jobNameListInAServerModel);
                 }
@@ -126,6 +142,10 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
         }
 
         return result;
+    }
+
+    private List<Issue> findIssuesByJobImplement(JobImplement jobImplement){
+        return issueRepository.findAllByJobImplement(jobImplement);
     }
 
     private List<String> getNameListOfServers(List<Server> serverList) {
