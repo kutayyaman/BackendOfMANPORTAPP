@@ -44,16 +44,24 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
         for (Application application : applicationListOfAll) {
             List<Country> countryListOfApplication = findCountryListOfApplication(application);
             DataForGetApplicationsSummaryModel dataForResultList = new DataForGetApplicationsSummaryModel();
+
+            ImpactType highestImpactTypeOfApp = null;
+
             for (Country countryOfApplication : countryListOfApplication) {
                 List<Server> serverListOfApplicationInACountry = findServerListOfApplicationInACountry(application, countryOfApplication);
                 ACountryWithServers aCountryWithServers = new ACountryWithServers();
                 aCountryWithServers.setCountryId(countryOfApplication.getId());
                 aCountryWithServers.setCountryName(countryOfApplication.getName());
+
+                ImpactType highestImpactTypeOfCountry = null;
+
                 for (Server server : serverListOfApplicationInACountry) {
                     JobNameListInAServerModel jobNameListInAServerModel = new JobNameListInAServerModel();
                     jobNameListInAServerModel.setServerId(server.getId());
                     jobNameListInAServerModel.setServerName(server.getName());
                     List<JobImplement> jobImplements = findJobImplementsListOfApplicationInAServer(application, server);
+
+                    ImpactType highestImpactTypeOfServer = null;
                     for (JobImplement jobImplement : jobImplements) {
                         JobInterface jobInterface = jobImplement.getJobInterface();
                         String jobName = jobInterface.getName();
@@ -61,22 +69,66 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
                         JobNameAndIdWithIssuesModel jobNameAndIssuesModel = new JobNameAndIdWithIssuesModel();
                         jobNameAndIssuesModel.setJobName(jobName);
                         jobNameAndIssuesModel.setJobId(jobImplement.getId());
-                        List<Issue> issues= findIssuesByJobImplement(jobImplement);
-                        for(Issue issue : issues){
+                        List<Issue> issues = findIssuesByJobImplement(jobImplement);
+
+                        ImpactType highestImpactTypeOfJob = null;
+                        for (Issue issue : issues) {
                             IssueDTO issueDTO = new IssueDTO();
                             issueDTO.setImpact(issue.getImpactType().toString());
                             issueDTO.setDescription(issue.getDescription());
                             issueDTO.setName(issue.getName());
                             jobNameAndIssuesModel.getIssueDTOList().add(issueDTO);
+
+                            ImpactType impactTypeOfIssue = issue.getImpactType();
+                            if (highestImpactTypeOfJob == null) {
+                                highestImpactTypeOfJob = impactTypeOfIssue;
+                            } else if (impactTypeOfIssue.getImpactCode() > highestImpactTypeOfJob.getImpactCode()) {
+                                highestImpactTypeOfJob = impactTypeOfIssue;
+                            }
+                        }
+                        if (highestImpactTypeOfJob != null) {
+                            jobNameAndIssuesModel.setHighestImpactOfJob(highestImpactTypeOfJob.toString());
                         }
                         jobNameListInAServerModel.getJobAndIssues().add(jobNameAndIssuesModel);
+                        if (highestImpactTypeOfJob != null) {
+                            if (highestImpactTypeOfServer == null) {
+                                highestImpactTypeOfServer = highestImpactTypeOfJob;
+                            } else if (highestImpactTypeOfJob.getImpactCode() > highestImpactTypeOfServer.getImpactCode()) {
+                                highestImpactTypeOfServer = highestImpactTypeOfJob;
+                            }
+                        }
+
+                    }
+                    if (highestImpactTypeOfServer != null) {
+                        jobNameListInAServerModel.setHighestImpactOfServer(highestImpactTypeOfServer.toString());
                     }
                     aCountryWithServers.getJobNameListInAServerModelList().add(jobNameListInAServerModel);
+                    if (highestImpactTypeOfServer != null) {
+                        if (highestImpactTypeOfCountry == null) {
+                            highestImpactTypeOfCountry = highestImpactTypeOfServer;
+                        } else if (highestImpactTypeOfServer.getImpactCode() > highestImpactTypeOfCountry.getImpactCode()) {
+                            highestImpactTypeOfCountry = highestImpactTypeOfServer;
+                        }
+                    }
                 }
                 dataForResultList.setAppId(application.getId());
                 dataForResultList.setAppName(application.getShortName());
+                if (highestImpactTypeOfCountry != null) {
+                    aCountryWithServers.setHighestImpactOfCountry(highestImpactTypeOfCountry.toString());
+                }
                 dataForResultList.getACountryWithServersList().add(aCountryWithServers);
 
+                if (highestImpactTypeOfCountry != null) {
+                    if (highestImpactTypeOfApp == null) {
+                        highestImpactTypeOfApp = highestImpactTypeOfCountry;
+                    } else if (highestImpactTypeOfCountry.getImpactCode() > highestImpactTypeOfApp.getImpactCode()) {
+                        highestImpactTypeOfApp = highestImpactTypeOfCountry;
+                    }
+                }
+
+            }
+            if (highestImpactTypeOfApp != null) {
+                dataForResultList.setHighestImpactOfApp(highestImpactTypeOfApp.toString());
             }
             result.getApplicationsSummary().add(dataForResultList);
         }
@@ -144,7 +196,7 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
         return result;
     }
 
-    private List<Issue> findIssuesByJobImplement(JobImplement jobImplement){
+    private List<Issue> findIssuesByJobImplement(JobImplement jobImplement) {
         return issueRepository.findAllByJobImplement(jobImplement);
     }
 
