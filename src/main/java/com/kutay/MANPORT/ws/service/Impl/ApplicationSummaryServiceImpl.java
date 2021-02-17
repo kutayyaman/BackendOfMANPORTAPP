@@ -34,9 +34,34 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
         List<Application> applicationListOfAll = applicationRepository.findAll();
         GetApplicationsSummaryModel result;
 
-
         result = getServerDatasWithCountrFromApplications(applicationListOfAll);
+        result = sortApplicationsByIssue(result);
         return result;
+    }
+
+    private GetApplicationsSummaryModel sortApplicationsByIssue(GetApplicationsSummaryModel result) {
+        GetApplicationsSummaryModel tempResult = result;
+        List<AnAppWithCountriesModel> appListOriginal = result.getApplicationsSummary();
+        List<AnAppWithCountriesModel> sortedAppList = sortAppListByIssue(appListOriginal);
+
+        tempResult.setApplicationsSummary(sortedAppList);
+        return tempResult;
+    }
+
+    private List<AnAppWithCountriesModel> sortAppListByIssue(List<AnAppWithCountriesModel> appList){
+        List<AnAppWithCountriesModel> appsHaveIssue = new ArrayList<>();
+        List<AnAppWithCountriesModel> appsNotHaveIssue = new ArrayList<>();
+        for(AnAppWithCountriesModel app : appList){
+            if(app.getHighestImpactOfApp()==null){
+                appsNotHaveIssue.add(app);
+            }
+            else{
+                appsHaveIssue.add(app);
+            }
+        }
+
+        appsHaveIssue.addAll(appsNotHaveIssue);
+        return appsHaveIssue;
     }
 
     private GetApplicationsSummaryModel getServerDatasWithCountrFromApplications(List<Application> applicationListOfAll) {
