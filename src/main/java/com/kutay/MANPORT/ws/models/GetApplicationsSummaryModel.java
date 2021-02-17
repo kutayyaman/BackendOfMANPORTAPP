@@ -7,5 +7,5 @@ import java.util.List;
 
 @Data
 public class GetApplicationsSummaryModel {
-    List<DataForGetApplicationsSummaryModel> applicationsSummary = new ArrayList<>();
+    List<AnAppWithCountriesModel> applicationsSummary = new ArrayList<>();
 }

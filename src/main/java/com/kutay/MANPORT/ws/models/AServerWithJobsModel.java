@@ -8,9 +8,9 @@ import java.util.List;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class JobNameListInAServerModel {
+public class AServerWithJobsModel {
     private Long serverId;
     private String serverName;
     private String highestImpactOfServer;
-    private List<JobNameAndIdWithIssuesModel> jobAndIssues = new ArrayList<>();
+    private List<AJobWithIssuesModel> jobAndIssues = new ArrayList<>();
 }

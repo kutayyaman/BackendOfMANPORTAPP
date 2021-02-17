@@ -24,6 +24,11 @@ public class ErrorHandler implements ErrorController {//Eger bizim yakalamadigim
         this.messageSource = messageSource;
     }
 
+    @Override
+    public String getErrorPath() {
+        return "/error";
+    }
+
     @RequestMapping("/error")
     ApiError handleError(WebRequest webRequest) {
         Map<String, Object> attributes = this.errorAttributes.getErrorAttributes(webRequest, ErrorAttributeOptions.of(ErrorAttributeOptions.Include.MESSAGE, ErrorAttributeOptions.Include.BINDING_ERRORS));
@@ -38,7 +43,7 @@ public class ErrorHandler implements ErrorController {//Eger bizim yakalamadigim
     private ApiError createApiError(WebRequest webRequest, Map<String, Object> attributes) {
         String message = (String) attributes.get("message");
         if (message.equals("Unauthorized")) {
-            message = messageSource.getMessage("manportapp.warning.unauthorized",null, webRequest.getLocale());
+            message = messageSource.getMessage("manportapp.warning.unauthorized", null, webRequest.getLocale());
         }
         String path = (String) attributes.get("path");
         int status = (Integer) attributes.get("status");
@@ -56,10 +61,4 @@ public class ErrorHandler implements ErrorController {//Eger bizim yakalamadigim
             apiError.setValidationErrors(validationErrors);
         }
     }
-
-    @Override
-    public String getErrorPath() {
-        return "/error";
-    }
-
 }

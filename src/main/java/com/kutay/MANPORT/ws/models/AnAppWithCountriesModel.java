@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DataForGetApplicationsSummaryModel {
+public class AnAppWithCountriesModel {
     private Long appId;
     private String appName;
     private String highestImpactOfApp;

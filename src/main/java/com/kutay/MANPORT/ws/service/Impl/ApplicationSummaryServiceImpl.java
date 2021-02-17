@@ -41,9 +41,10 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
 
     private GetApplicationsSummaryModel getServerDatasWithCountrFromApplications(List<Application> applicationListOfAll) {
         GetApplicationsSummaryModel result = new GetApplicationsSummaryModel();
+
         for (Application application : applicationListOfAll) {
             List<Country> countryListOfApplication = findCountryListOfApplication(application);
-            DataForGetApplicationsSummaryModel dataForResultList = new DataForGetApplicationsSummaryModel();
+            AnAppWithCountriesModel anAppWithCountriesModel = new AnAppWithCountriesModel();
 
             ImpactType highestImpactTypeOfApp = null;
 
@@ -56,83 +57,79 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
                 ImpactType highestImpactTypeOfCountry = null;
 
                 for (Server server : serverListOfApplicationInACountry) {
-                    JobNameListInAServerModel jobNameListInAServerModel = new JobNameListInAServerModel();
-                    jobNameListInAServerModel.setServerId(server.getId());
-                    jobNameListInAServerModel.setServerName(server.getName());
+                    AServerWithJobsModel aServerWithJobsModel = new AServerWithJobsModel();
+                    aServerWithJobsModel.setServerId(server.getId());
+                    aServerWithJobsModel.setServerName(server.getName());
                     List<JobImplement> jobImplements = findJobImplementsListOfApplicationInAServer(application, server);
 
                     ImpactType highestImpactTypeOfServer = null;
+
                     for (JobImplement jobImplement : jobImplements) {
                         JobInterface jobInterface = jobImplement.getJobInterface();
                         String jobName = jobInterface.getName();
 
-                        JobNameAndIdWithIssuesModel jobNameAndIssuesModel = new JobNameAndIdWithIssuesModel();
-                        jobNameAndIssuesModel.setJobName(jobName);
-                        jobNameAndIssuesModel.setJobId(jobImplement.getId());
+                        AJobWithIssuesModel aJobWithIssuesModel = new AJobWithIssuesModel();
+                        aJobWithIssuesModel.setJobName(jobName);
+                        aJobWithIssuesModel.setJobId(jobImplement.getId());
                         List<Issue> issues = findIssuesByJobImplement(jobImplement);
 
                         ImpactType highestImpactTypeOfJob = null;
+
                         for (Issue issue : issues) {
-                            IssueDTO issueDTO = new IssueDTO();
-                            issueDTO.setImpact(issue.getImpactType().toString());
-                            issueDTO.setDescription(issue.getDescription());
-                            issueDTO.setName(issue.getName());
-                            jobNameAndIssuesModel.getIssueDTOList().add(issueDTO);
+                            IssueDTO issueDTO = setIssueToIssueDTO(issue);
+                            aJobWithIssuesModel.getIssueDTOList().add(issueDTO);
 
-                            ImpactType impactTypeOfIssue = issue.getImpactType();
-                            if (highestImpactTypeOfJob == null) {
-                                highestImpactTypeOfJob = impactTypeOfIssue;
-                            } else if (impactTypeOfIssue.getImpactCode() > highestImpactTypeOfJob.getImpactCode()) {
-                                highestImpactTypeOfJob = impactTypeOfIssue;
-                            }
+                            highestImpactTypeOfJob = getHighestImpactType(highestImpactTypeOfJob, issue.getImpactType());
+
                         }
                         if (highestImpactTypeOfJob != null) {
-                            jobNameAndIssuesModel.setHighestImpactOfJob(highestImpactTypeOfJob.toString());
+                            aJobWithIssuesModel.setHighestImpactOfJob(highestImpactTypeOfJob.toString());
                         }
-                        jobNameListInAServerModel.getJobAndIssues().add(jobNameAndIssuesModel);
-                        if (highestImpactTypeOfJob != null) {
-                            if (highestImpactTypeOfServer == null) {
-                                highestImpactTypeOfServer = highestImpactTypeOfJob;
-                            } else if (highestImpactTypeOfJob.getImpactCode() > highestImpactTypeOfServer.getImpactCode()) {
-                                highestImpactTypeOfServer = highestImpactTypeOfJob;
-                            }
-                        }
+                        aServerWithJobsModel.getJobAndIssues().add(aJobWithIssuesModel);
+                        highestImpactTypeOfServer = getHighestImpactType(highestImpactTypeOfServer,highestImpactTypeOfJob);
 
                     }
                     if (highestImpactTypeOfServer != null) {
-                        jobNameListInAServerModel.setHighestImpactOfServer(highestImpactTypeOfServer.toString());
+                        aServerWithJobsModel.setHighestImpactOfServer(highestImpactTypeOfServer.toString());
                     }
-                    aCountryWithServers.getJobNameListInAServerModelList().add(jobNameListInAServerModel);
-                    if (highestImpactTypeOfServer != null) {
-                        if (highestImpactTypeOfCountry == null) {
-                            highestImpactTypeOfCountry = highestImpactTypeOfServer;
-                        } else if (highestImpactTypeOfServer.getImpactCode() > highestImpactTypeOfCountry.getImpactCode()) {
-                            highestImpactTypeOfCountry = highestImpactTypeOfServer;
-                        }
-                    }
+                    aCountryWithServers.getAServerWithJobsList().add(aServerWithJobsModel);
+                    highestImpactTypeOfCountry = getHighestImpactType(highestImpactTypeOfCountry,highestImpactTypeOfServer);
                 }
-                dataForResultList.setAppId(application.getId());
-                dataForResultList.setAppName(application.getShortName());
+                anAppWithCountriesModel.setAppId(application.getId());
+                anAppWithCountriesModel.setAppName(application.getShortName());
                 if (highestImpactTypeOfCountry != null) {
                     aCountryWithServers.setHighestImpactOfCountry(highestImpactTypeOfCountry.toString());
                 }
-                dataForResultList.getACountryWithServersList().add(aCountryWithServers);
+                anAppWithCountriesModel.getACountryWithServersList().add(aCountryWithServers);
 
-                if (highestImpactTypeOfCountry != null) {
-                    if (highestImpactTypeOfApp == null) {
-                        highestImpactTypeOfApp = highestImpactTypeOfCountry;
-                    } else if (highestImpactTypeOfCountry.getImpactCode() > highestImpactTypeOfApp.getImpactCode()) {
-                        highestImpactTypeOfApp = highestImpactTypeOfCountry;
-                    }
-                }
+                highestImpactTypeOfApp = getHighestImpactType(highestImpactTypeOfApp,highestImpactTypeOfCountry);
 
             }
             if (highestImpactTypeOfApp != null) {
-                dataForResultList.setHighestImpactOfApp(highestImpactTypeOfApp.toString());
+                anAppWithCountriesModel.setHighestImpactOfApp(highestImpactTypeOfApp.toString());
             }
-            result.getApplicationsSummary().add(dataForResultList);
+            result.getApplicationsSummary().add(anAppWithCountriesModel);
         }
         return result;
+    }
+
+    private ImpactType getHighestImpactType(ImpactType highestImpactType, ImpactType impactType) {
+        if (impactType != null) {
+            if (highestImpactType == null) {
+                highestImpactType = impactType;
+            } else if (impactType.getImpactCode() > highestImpactType.getImpactCode()) {
+                highestImpactType = impactType;
+            }
+        }
+        return highestImpactType;
+    }
+
+    private IssueDTO setIssueToIssueDTO(Issue issue) {
+        IssueDTO issueDTO = new IssueDTO();
+        issueDTO.setImpact(issue.getImpactType().toString());
+        issueDTO.setDescription(issue.getDescription());
+        issueDTO.setName(issue.getName());
+        return issueDTO;
     }
 
     private List<JobImplement> findJobImplementsListOfApplicationInAServer(Application application, Server server) {

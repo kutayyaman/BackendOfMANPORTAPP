@@ -12,5 +12,5 @@ public class ACountryWithServers {
     private Long countryId;
     private String countryName;
     private String highestImpactOfCountry;
-    private List<JobNameListInAServerModel> jobNameListInAServerModelList = new ArrayList<>();
+    private List<AServerWithJobsModel> AServerWithJobsList = new ArrayList<>();
 }
