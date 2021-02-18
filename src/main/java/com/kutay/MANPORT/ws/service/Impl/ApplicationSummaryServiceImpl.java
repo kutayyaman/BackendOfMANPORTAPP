@@ -31,7 +31,7 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
 
     @Override
     public GetApplicationsSummaryModel getApplicationsSummary() {
-        List<Application> applicationListOfAll = applicationRepository.findAll();
+        List<Application> applicationListOfAll = applicationRepository.findAllByRowStatus(RowStatus.ACTIVE);
         GetApplicationsSummaryModel result;
 
         result = getServerDatasWithCountrFromApplications(applicationListOfAll);
@@ -219,7 +219,7 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
     }
 
     private List<Issue> findIssuesByJobImplement(JobImplement jobImplement) {
-        return issueRepository.findAllByJobImplement(jobImplement);
+        return issueRepository.findAllByJobImplementAndRowStatus(jobImplement,RowStatus.ACTIVE);
     }
 
     private List<String> getNameListOfServers(List<Server> serverList) {

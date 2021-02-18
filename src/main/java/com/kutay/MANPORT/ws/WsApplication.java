@@ -44,10 +44,10 @@ public class WsApplication {
             }
 
             private void createJobImplements() {
-                if (jobImplementsRepository.count() <= 0) {
+                if (jobImplementsRepository.countAllByRowStatus(RowStatus.ACTIVE) <= 0) {
                     List<JobImplement> jobImplements = new ArrayList<>();
-                    List<JobInterface> jobInterfaces = jobInterfaceRepository.findAll();
-                    List<Server> serverList = serverRepository.findAll();
+                    List<JobInterface> jobInterfaces = jobInterfaceRepository.findAllByRowStatus(RowStatus.ACTIVE);
+                    List<Server> serverList = serverRepository.findAllByRowStatus(RowStatus.ACTIVE);
                     for (int i = 0; i < 5; i++) {
                         JobImplement jobImplement = new JobImplement();
                         jobImplement.setJobInterface(jobInterfaces.get(i));
@@ -63,9 +63,9 @@ public class WsApplication {
             }
 
             private void createJobInterfaces() {
-                if (jobInterfaceRepository.count() <= 0) {
+                if (jobInterfaceRepository.countAllByRowStatus(RowStatus.ACTIVE) <= 0) {
                     List<JobInterface> jobInterfaces = new ArrayList<>();
-                    List<Application> applicationList = applicationRepository.findAll();
+                    List<Application> applicationList = applicationRepository.findAllByRowStatus(RowStatus.ACTIVE);
                     for (int i = 0; i < 5; i++) {
                         JobInterface jobInterface = new JobInterface();
                         jobInterface.setApplication(applicationList.get(i));
@@ -81,7 +81,7 @@ public class WsApplication {
             }
 
             private void createApplications() {
-                if (applicationRepository.count() <= 0) {
+                if (applicationRepository.countAllByRowStatus(RowStatus.ACTIVE) <= 0) {
                     List<Application> applicationList = new ArrayList<>();
                     for (int i = 0; i < 5; i++) {
                         Application application = new Application();
@@ -94,9 +94,9 @@ public class WsApplication {
             }
 
             private void createServers() {
-                List<Country> countryList = countryRepository.findAll();
+                List<Country> countryList = countryRepository.findAllByRowStatus(RowStatus.ACTIVE);
                 List<Server> serverList = new ArrayList<>();
-                if (serverRepository.count() <= 0) {
+                if (serverRepository.countAllByRowStatus(RowStatus.ACTIVE) <= 0) {
                     for (int i = 0; i < 5; i++) {
                         Server server = new Server();
                         server.setCountry(countryList.get(i));
@@ -108,7 +108,7 @@ public class WsApplication {
             }
 
             private void createCountries() {
-                if (countryRepository.count() <= 0) {
+                if (countryRepository.countAllByRowStatus(RowStatus.ACTIVE) <= 0) {
                     List<Country> countryList = new ArrayList<>();
                     for (int i = 0; i < 5; i++) {
                         Country country = new Country();
@@ -132,9 +132,9 @@ public class WsApplication {
 
 
             private void createIssues() throws InterruptedException {
-                if (issueRepository.count() <= 0) {
+                if (issueRepository.countAllByRowStatus(RowStatus.ACTIVE) <= 0) {
                     List<Issue> issueLists = new ArrayList<>();
-                    List<JobImplement> jobImplements = jobImplementsRepository.findAll();
+                    List<JobImplement> jobImplements = jobImplementsRepository.findAllByRowStatus(RowStatus.ACTIVE);
                     for (int i = 0; i < 10; i++) {
                         Issue issue = new Issue();
                         issue.setName("Issue" + (i + 1));

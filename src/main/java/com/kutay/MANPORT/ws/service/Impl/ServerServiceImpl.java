@@ -1,6 +1,7 @@
 package com.kutay.MANPORT.ws.service.Impl;
 
 import com.kutay.MANPORT.ws.domain.Country;
+import com.kutay.MANPORT.ws.domain.RowStatus;
 import com.kutay.MANPORT.ws.domain.Server;
 import com.kutay.MANPORT.ws.repository.ServerRepository;
 import com.kutay.MANPORT.ws.service.IServerService;
@@ -18,11 +19,11 @@ public class ServerServiceImpl implements IServerService {
 
     @Override
     public List<Server> findAll() {
-        return serverRepository.findAll();
+        return serverRepository.findAllByRowStatus(RowStatus.ACTIVE);
     }
 
     @Override
     public List<Server> findAllByCountry(Country country) {
-        return serverRepository.findAllByCountry(country);
+        return serverRepository.findAllByCountryAndRowStatus(country,RowStatus.ACTIVE);
     }
 }

@@ -1,5 +1,6 @@
 package com.kutay.MANPORT.ws.service.Impl;
 
+import com.kutay.MANPORT.ws.domain.RowStatus;
 import com.kutay.MANPORT.ws.domain.User;
 import com.kutay.MANPORT.ws.dto.UserDTO;
 import com.kutay.MANPORT.ws.repository.UserRepository;
@@ -53,6 +54,6 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmailAndRowStatus(email, RowStatus.ACTIVE);
     }
 }

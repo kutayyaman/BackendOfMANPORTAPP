@@ -19,7 +19,7 @@ public class IssueServiceImpl implements IIssueService {
 
     @Override
     public List<TopIssueDTO> findTop3() {
-        List<Issue> top3IssuesFromDB = issueRepository.findTop3ByOrderByIdDesc();
+        List<Issue> top3IssuesFromDB = issueRepository.findTop3ByRowStatusOrderByIdDesc(RowStatus.ACTIVE);
 
         List<TopIssueDTO> top3TopIssuesToReturn = convertIssueListToTopIssueDTOList(top3IssuesFromDB);
 

@@ -1,6 +1,7 @@
 package com.kutay.MANPORT.ws.service.Impl;
 
 import com.kutay.MANPORT.ws.domain.Application;
+import com.kutay.MANPORT.ws.domain.RowStatus;
 import com.kutay.MANPORT.ws.repository.ApplicationRepository;
 import com.kutay.MANPORT.ws.service.IApplicationService;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,6 @@ public class ApplicationServiceImpl implements IApplicationService {
 
     @Override
     public List<Application> findAll() {
-        return applicationRepository.findAll();
+        return applicationRepository.findAllByRowStatus(RowStatus.ACTIVE);
     }
 }
