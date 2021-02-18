@@ -1,13 +1,12 @@
 package com.kutay.MANPORT.ws.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.kutay.MANPORT.ws.domain.ImpactType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-@ApiModel(value = "Issue Data Transfer Object")
+@ApiModel(value = "TopIssue Data Transfer Object")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TopIssueDTO {
     @ApiModelProperty(required = true,value = "id")
