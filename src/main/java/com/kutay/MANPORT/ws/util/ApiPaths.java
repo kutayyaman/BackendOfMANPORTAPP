@@ -20,4 +20,8 @@ public final class ApiPaths {
         public static final String CTRL = BASE_PATH+"/applicationsummary";
     }
 
+    public static final class ApplicationCtrl{
+        public static final String CTRL = BASE_PATH+"/application";
+    }
+
 }

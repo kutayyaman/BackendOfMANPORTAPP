@@ -14,4 +14,8 @@ public class Issue extends BaseEntity {
     private JobImplement jobImplement;
     @Enumerated(EnumType.STRING)
     private ImpactType impactType;
+    private Boolean status=true;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="applicationId")
+    private Application application;
 }

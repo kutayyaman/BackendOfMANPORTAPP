@@ -3,11 +3,15 @@ package com.kutay.MANPORT.ws.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @ApiModel(value = "Issue Data Transfer Object")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class IssueDTO {
     @ApiModelProperty(required = true,value = "id")
     private long id;
@@ -25,4 +29,6 @@ public class IssueDTO {
     private String jobName;
     @ApiModelProperty(required = true,value = "countryName")
     private String countryName;
+    @ApiModelProperty(required = true,value = "status")
+    private Boolean status=true;
 }

@@ -13,6 +13,8 @@ import java.util.List;
 public class Application extends BaseEntity{
     private String shortName;
     private String fullName;
-    @OneToMany(mappedBy = "application", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "application", fetch = FetchType.LAZY)
     private List<JobInterface> jobInterfaces = new ArrayList<>();
+    @OneToMany(mappedBy = "application", fetch = FetchType.LAZY)
+    private List<Issue> issues = new ArrayList<>();
 }

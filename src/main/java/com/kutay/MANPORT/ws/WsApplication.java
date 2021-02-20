@@ -139,8 +139,12 @@ public class WsApplication {
                         Issue issue = new Issue();
                         issue.setName("Issue" + (i + 1));
                         issue.setImpactType(ImpactType.LOW);
-                        issue.setJobImplement(jobImplements.get(i % 3));
+                        JobImplement jobImplement = jobImplements.get(i%3);
+                        JobInterface jobInterface = jobImplement.getJobInterface();
+                        issue.setJobImplement(jobImplement);
                         issue.setDescription(issue.getJobImplement().getId().toString()+" idli Jobda sorun var");
+                        Application application = applicationRepository.findFirstByJobInterfaces(jobInterface);
+                        issue.setApplication(application);
                         issueLists.add(issue);
                         Thread.sleep(1000);
                     }
