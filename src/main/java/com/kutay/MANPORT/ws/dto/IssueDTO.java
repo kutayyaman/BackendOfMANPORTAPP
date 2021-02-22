@@ -1,6 +1,7 @@
 package com.kutay.MANPORT.ws.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.kutay.MANPORT.ws.domain.Issue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -25,10 +26,32 @@ public class IssueDTO {
     private String createdDate;
     @ApiModelProperty(required = true,value = "appName")
     private String appShortName;
+    @ApiModelProperty(required = true,value = "appId")
+    private Long appId;
     @ApiModelProperty(required = true,value = "jobName")
     private String jobName;
+    @ApiModelProperty(required = true,value = "jobInterfaceId")
+    private Long jobInterfaceId;
     @ApiModelProperty(required = true,value = "countryName")
     private String countryName;
+    @ApiModelProperty(required = true,value = "countryId")
+    private Long countryId;
     @ApiModelProperty(required = true,value = "status")
     private Boolean status=true;
+    @ApiModelProperty(required = true,value = "serverName")
+    private String serverName;
+    @ApiModelProperty(required = true,value = "serverId")
+    private Long serverId;
+
+    public IssueDTO(Issue issue) {
+        this.id = issue.getId();
+        this.name = issue.getName();
+        this.description = issue.getDescription();
+        this.impact = issue.getImpactType().toString();
+        this.createdDate = issue.getCreatedDate();
+        this.appShortName = issue.getApplication().getShortName();
+        this.jobName = issue.getJobImplement().getJobInterface().getName();
+        this.countryName = issue.getJobImplement().getServer().getCountry().getName();
+        this.status = issue.getStatus();
+    }
 }

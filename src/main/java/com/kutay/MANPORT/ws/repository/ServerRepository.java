@@ -11,4 +11,5 @@ public interface ServerRepository extends JpaRepository<Server, Long> {
     List<Server> findAllByRowStatus(RowStatus rowStatus);
     List<Server> findAllByCountryAndRowStatus(Country country,RowStatus rowStatus);
     int countAllByRowStatus(RowStatus rowStatus);
+    Server findFirstByIdAndRowStatus(Long id, RowStatus rowStatus);
 }

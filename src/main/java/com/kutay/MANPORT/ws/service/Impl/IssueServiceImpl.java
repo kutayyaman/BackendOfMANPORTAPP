@@ -1,36 +1,46 @@
 package com.kutay.MANPORT.ws.service.Impl;
 
+import com.kutay.MANPORT.ws.MyAnnotations.CurrentUser;
 import com.kutay.MANPORT.ws.domain.*;
 import com.kutay.MANPORT.ws.dto.IssueDTO;
 import com.kutay.MANPORT.ws.dto.IssuesFilterDTO;
 import com.kutay.MANPORT.ws.dto.PageableDTO;
 import com.kutay.MANPORT.ws.dto.TopIssueDTO;
+import com.kutay.MANPORT.ws.error.JobDoesntExistInServerException;
+import com.kutay.MANPORT.ws.error.NotFoundException;
 import com.kutay.MANPORT.ws.repository.IssueRepository;
 import com.kutay.MANPORT.ws.service.IApplicationService;
 import com.kutay.MANPORT.ws.service.IIssueService;
+import com.kutay.MANPORT.ws.service.IServerService;
 import com.kutay.MANPORT.ws.util.CurrentDateCreator;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class IssueServiceImpl implements IIssueService {
 
     private final IssueRepository issueRepository;
     private final IApplicationService applicationService;
+    private final MessageSource messageSource;
+    private final IServerService serverService;
 
-    public IssueServiceImpl(IssueRepository issueRepository, IApplicationService applicationService) {
+    public IssueServiceImpl(IssueRepository issueRepository, IApplicationService applicationService, MessageSource messageSource, IServerService serverService) {
         this.issueRepository = issueRepository;
         this.applicationService = applicationService;
+        this.messageSource = messageSource;
+        this.serverService = serverService;
     }
 
     @Override
@@ -94,6 +104,95 @@ public class IssueServiceImpl implements IIssueService {
         return result;
     }
 
+    @Override
+    public IssueDTO getById(Long id) {
+        Issue issue = issueRepository.findFirstByIdAndRowStatus(id, RowStatus.ACTIVE);
+        if (issue == null) {
+            throw new NotFoundException();
+        }
+        IssueDTO issueDTO = new IssueDTO(issue);
+        JobImplement jobImplement = issue.getJobImplement();
+        Server server = jobImplement.getServer();
+        issueDTO.setCountryId(server.getCountry().getId());
+        issueDTO.setAppId(issue.getApplication().getId());
+        issueDTO.setJobInterfaceId(jobImplement.getJobInterface().getId());
+        issueDTO.setServerName(server.getName());
+        issueDTO.setServerId(server.getId());
+        return issueDTO;
+    }
+
+    @Override
+    public IssueDTO updateIssue(IssueDTO issueDTO, User user) {
+        Long jobInterfaceId = issueDTO.getJobInterfaceId();
+        Long serverId = issueDTO.getServerId();
+
+        Server server = serverService.findFirstById(serverId);
+        List<JobImplement> jobImplements = server.getJobImplements();
+
+        JobImplement jobImplement = findJobImplementInAListByJobInterfaceId(jobImplements, jobInterfaceId);
+        if (jobImplement == null) {
+            throw new JobDoesntExistInServerException(messageSource);
+        }
+
+        //jobImplement'e eklenecek bu issue demekki bunu anladik buraya geldiysek
+
+        Issue issue = issueRepository.getOne(issueDTO.getId());
+
+        Application application = new Application();
+        application.setId(issueDTO.getAppId());
+
+        issue.setName(issueDTO.getName());
+        issue.setDescription(issueDTO.getDescription());
+        issue.setImpactType(ImpactType.valueOf(issueDTO.getImpact()));
+        issue.setApplication(application);
+        issue.setJobImplement(jobImplement);
+        issue.setStatus(issueDTO.getStatus());
+        if (user != null) {
+            issue.setModifiedBy(user.getEmail());
+        }
+        issue.setModifiedDate(CurrentDateCreator.currentDateAsString());
+        issueRepository.save(issue);
+
+
+        return issueDTO;
+    }
+
+    @Override
+    public ResponseEntity<?> deleteIssueById(Long id) { //TODO: yapilacak burasi
+        //issueRepository.deleteIssueById(id);
+        Issue issue = issueRepository.findFirstByIdAndRowStatus(id, RowStatus.ACTIVE);
+        issue.setRowStatus(RowStatus.DELETED);
+        issueRepository.save(issue);
+
+        Locale locale = LocaleContextHolder.getLocale();
+        String message = messageSource.getMessage("manportapp.info.issue.Deleted", null, locale);
+        return ResponseEntity.ok().body(message);
+    }
+
+    @Override
+    public ResponseEntity<?> changeIssueStatusById(Boolean status, Long id, User user) {
+        Issue issue = issueRepository.findFirstByIdAndRowStatus(id, RowStatus.ACTIVE);
+        issue.setStatus(status);
+        issue.setModifiedDate(CurrentDateCreator.currentDateAsString());
+        issue.setModifiedBy(user.getEmail());
+        issueRepository.save(issue);
+
+        Locale locale = LocaleContextHolder.getLocale();
+        String message = messageSource.getMessage("manportapp.info.issue.status.changed", null, locale);
+        return ResponseEntity.ok().body(message);
+    }
+
+    private JobImplement findJobImplementInAListByJobInterfaceId(List<JobImplement> jobImplements, Long jobInterfaceId) {
+        for (JobImplement jobImplement : jobImplements) {
+            JobInterface jobInterface = jobImplement.getJobInterface();
+            Long id = jobInterface.getId();
+            if (id.equals(jobInterfaceId)) {
+                return jobImplement;
+            }
+        }
+        return null;
+    }
+
     private String addOneDay(String dateString) throws ParseException {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern(CurrentDateCreator.getDatePattern());
         LocalDate date = LocalDate.parse(dateString, fmt);
@@ -119,23 +218,31 @@ public class IssueServiceImpl implements IIssueService {
             IssueDTO issueDTO = new IssueDTO();
             JobImplement jobImplement = issue.getJobImplement();
             JobInterface jobInterface = jobImplement.getJobInterface();
+            Server server = jobImplement.getServer();
 
             issueDTO.setId(issue.getId());
             issueDTO.setName(issue.getName());
             issueDTO.setImpact(issue.getImpactType().toString());
             issueDTO.setDescription(issue.getDescription());
-            issueDTO.setCountryName(jobImplement.getServer().getCountry().getName());
+            Country country = server.getCountry();
+            issueDTO.setCountryName(country.getName());
+            issueDTO.setCountryId(country.getId());
             issueDTO.setCreatedDate(issue.getCreatedDate().toString());
-            issueDTO.setAppShortName(jobInterface.getApplication().getShortName());
+            Application application = issue.getApplication();
+            issueDTO.setAppShortName(application.getShortName());
+            issueDTO.setAppId(application.getId());
             issueDTO.setJobName(jobInterface.getName());
             issueDTO.setStatus(issue.getStatus());
+            issueDTO.setJobInterfaceId(jobInterface.getId());
+            issueDTO.setServerName(server.getName());
+            issueDTO.setServerId(server.getId());
+
 
             issueDTOS.add(issueDTO);
         }
         return issueDTOS;
     }
 
-    //Burayi kesinlikle refactor etmelisin cunku her get yaptiginda veritabanina sorgu yapiyor mumkun oldugunca az sorgu yollamaya calis
     private List<TopIssueDTO> convertIssueListToTopIssueDTOList(List<Issue> top3IssuesFromDB) {
         List<TopIssueDTO> top3TopIssuesToReturn = new ArrayList<>();
         for (Issue issue : top3IssuesFromDB) {

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 
 import java.util.Date;
@@ -63,4 +64,13 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
                     "and I.createdDate<= :dateTo "
     )
     Page<Issue> findAllByRowStatusAndCreatedDateBetween(RowStatus rowStatus, String dateFrom, String dateTo, Pageable pageable);
+
+    Issue findFirstByIdAndRowStatus(Long id, RowStatus rowStatus);
+
+    /*@Query(
+            "update Issue I " +
+                    "set I.rowStatus = com.kutay.MANPORT.ws.domain.RowStatus.DELETED " +
+                    "where I.id = :id "
+    )
+    void deleteIssueById(@Param("id")Long id,@Param("rowStatus")RowStatus rowStatus);*/ //bu queriy calismiyor sebebini arastir
 }

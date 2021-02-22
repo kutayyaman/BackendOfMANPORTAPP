@@ -24,4 +24,16 @@ public final class ApiPaths {
         public static final String CTRL = BASE_PATH+"/application";
     }
 
+    public static final class CountryCtrl{
+        public static final String CTRL = BASE_PATH+"/country";
+    }
+
+    public static final class JobInterfaceCtrl{
+        public static final String CTRL = BASE_PATH+"/jobInterface";
+    }
+
+    public static final class ServerCtrl{
+        public static final String CTRL = BASE_PATH+"/server";
+    }
+
 }
