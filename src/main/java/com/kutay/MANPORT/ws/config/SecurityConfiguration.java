@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,9 +22,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true) // bunu ekledik artik herhangi bir controllerin methodunda @PreAuthorize("#username == #loggedInUser.username") gibi ifadeler yazabiliriz mesela bu yazdigimizin anlami username loggedInUser'in username'ine esitse gir buraya degilse geriye error doner veya @PreAuthorize("#username == principal.username") principal ile giris yapan kullaniciya ulasabiliriz bu yazim tarzlarina Spring Expression Language(SpEL) denir.
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserAuthService userAuthService;
 
+    //TODO: bu @Lazy'yi circular dependency sorununu cozmek icin koydum ama o soruna tekrar bak
     public SecurityConfiguration(@Lazy UserAuthService userAuthService) {
         this.userAuthService = userAuthService;
     }

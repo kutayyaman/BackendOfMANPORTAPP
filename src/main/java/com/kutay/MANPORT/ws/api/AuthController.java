@@ -23,7 +23,7 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping()
+    @PostMapping()// /api/auth
     @ApiOperation(value = "Handle Authentication Operation", response = ResponseEntity.class)
     public ResponseEntity<?> handleAuthentication(@CurrentUser User user) { //@CurrentUser anatasyonunu ben olusturdum.
         return authService.auth(user);
