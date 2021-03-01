@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+src/main/java/com/kutay/MANPORT/ws/domain/BackendImplement.java
+src/main/java/com/kutay/MANPORT/ws/domain/BackendInterface.java
+src/main/java/com/kutay/MANPORT/ws/domain/DatabaseImplement.java
+src/main/java/com/kutay/MANPORT/ws/domain/DatabaseInterface.java
+src/main/java/com/kutay/MANPORT/ws/domain/FrontendImplement.java
+src/main/java/com/kutay/MANPORT/ws/domain/FrontendInterface.java
+src/main/java/com/kutay/MANPORT/ws/repository/FrontendImplementRepository.java
+src/main/java/com/kutay/MANPORT/ws/repository/FrontendInterfaceRepository.java
+src/main/java/com/kutay/MANPORT/ws/repository/FrontendTypeRepository.java

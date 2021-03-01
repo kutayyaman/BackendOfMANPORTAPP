@@ -21,15 +21,6 @@ public class Application extends BaseEntity implements Cloneable {
     @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;
-    @ManyToOne( fetch = FetchType.LAZY)
-    @JoinColumn(name = "frontendId")
-    private Frontend frontend;
-    @ManyToOne( fetch = FetchType.LAZY)
-    @JoinColumn(name = "backendId")
-    private Backend backend;
-    @ManyToOne( fetch = FetchType.LAZY)
-    @JoinColumn(name = "databaseId")
-    private Database database;
     @Enumerated(EnumType.STRING)
     private BusinessAreaType businessAreaType;
     @OneToMany(mappedBy = "application", fetch = FetchType.LAZY)

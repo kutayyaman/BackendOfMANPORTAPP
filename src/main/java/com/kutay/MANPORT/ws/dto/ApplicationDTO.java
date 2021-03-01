@@ -68,15 +68,6 @@ public class ApplicationDTO {
         Team team = user.getTeam();
         this.setResponsibleTeamName(team.getName());
         this.setResponsibleTeamId(team.getId());
-        Database database = application.getDatabase();
-        this.setDatabaseId(database.getId());
-        this.setDatabaseName(database.getName());
-        Backend backend = application.getBackend();
-        this.setBackendId(backend.getId());
-        this.setBackendName(backend.getName());
-        Frontend frontend = application.getFrontend();
-        this.setFrontendId(frontend.getId());
-        this.setFrontendName(frontend.getName());
         this.setLineOfBackendCode(application.getLineOfBackendCode());
         this.setLineOfFrontendCode(application.getLineOfFrontendCode());
         this.setLineStopRisk(application.isLineStopRisk());

@@ -25,17 +25,11 @@ public class ApplicationServiceImpl implements IApplicationService {
     private final ApplicationRepository applicationRepository;
     private final ModelMapper modelMapper;
     private final IUserService userService;
-    private final IFrontendService frontendService;
-    private final IBackendService backendService;
-    private final IDatabaseService databaseService;
 
-    public ApplicationServiceImpl(ApplicationRepository applicationRepository, ModelMapper modelMapper, IUserService userService, IFrontendService frontendService, IBackendService backendService, IDatabaseService databaseService) {
+    public ApplicationServiceImpl(ApplicationRepository applicationRepository, ModelMapper modelMapper, IUserService userService) {
         this.applicationRepository = applicationRepository;
         this.modelMapper = modelMapper;
         this.userService = userService;
-        this.frontendService = frontendService;
-        this.backendService = backendService;
-        this.databaseService = databaseService;
     }
 
     @Override
@@ -149,24 +143,6 @@ public class ApplicationServiceImpl implements IApplicationService {
             throw new NotFoundException();
         }
         application.setUser(user);
-
-        Frontend frontend = frontendService.findById(applicationDTO.getFrontendId());
-        if (frontend == null) {
-            throw new NotFoundException();
-        }
-        application.setFrontend(frontend);
-
-        Backend backend = backendService.findById(applicationDTO.getBackendId());
-        if (backend == null) {
-            throw new NotFoundException();
-        }
-        application.setBackend(backend);
-
-        Database database = databaseService.findById(applicationDTO.getDatabaseId());
-        if (database == null) {
-            throw new NotFoundException();
-        }
-        application.setDatabase(database);
 
         application.setBusinessAreaType(BusinessAreaType.valueOf(applicationDTO.getBusinessAreaType()));
 

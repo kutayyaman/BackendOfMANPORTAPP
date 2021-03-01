@@ -30,14 +30,11 @@ public class WsApplication {
 
     //, CountryRepository countryRepository, PlantRepository plantRepository, ServerRoomRepository serverRoomRepository, BackendRepository backendRepository, FrontendRepository frontendRepository, DatabaseRepository databaseRepository, TeamRepository teamRepository, ApplicationRepository applicationRepository, JobRepository jobRepository
     @Bean
-    CommandLineRunner createInitialUsers(IUserService userService, IssueRepository issueRepository, CountryRepository countryRepository, ServerRepository serverRepository, ApplicationRepository applicationRepository, JobInterfaceRepository jobInterfaceRepository, JobImplementsRepository jobImplementsRepository, ApplicationServerRepository applicationServerRepository, FrontendRepository frontendRepository, BackendRepository backendRepository, DatabaseRepository databaseRepository, TeamRepository teamRepository) { //Spring projesi ayaga kalktigi zaman otomatik olarak bunun run methodu çalışır ve biz bunu başlangıç verileri eklemek için kullanıcaz.
+    CommandLineRunner createInitialUsers(IUserService userService, IssueRepository issueRepository, CountryRepository countryRepository, ServerRepository serverRepository, ApplicationRepository applicationRepository, JobInterfaceRepository jobInterfaceRepository, JobImplementsRepository jobImplementsRepository, ApplicationServerRepository applicationServerRepository, TeamRepository teamRepository) { //Spring projesi ayaga kalktigi zaman otomatik olarak bunun run methodu çalışır ve biz bunu başlangıç verileri eklemek için kullanıcaz.
         return new CommandLineRunner() {
             @Override
             public void run(String... args) throws Exception {
                 if (issueRepository.countAllByRowStatus(RowStatus.ACTIVE) <= 0) {
-                    createFrontends();
-                    createBackends();
-                    createDatabases();
                     createTeams();
                     createUsers();
                     createCountries();
@@ -59,35 +56,6 @@ public class WsApplication {
                 teamRepository.saveAll(teams);
             }
 
-            private void createFrontends() {
-                List<Frontend> frontends = new ArrayList<>();
-                for (int i = 0; i < 5; i++) {
-                    Frontend frontend = new Frontend();
-                    frontend.setName("Frontend" + i);
-                    frontends.add(frontend);
-                }
-                frontendRepository.saveAll(frontends);
-            }
-
-            private void createBackends() {
-                List<Backend> backends = new ArrayList<>();
-                for (int i = 0; i < 5; i++) {
-                    Backend backend = new Backend();
-                    backend.setName("Backend" + i);
-                    backends.add(backend);
-                }
-                backendRepository.saveAll(backends);
-            }
-
-            private void createDatabases() {
-                List<Database> databases = new ArrayList<>();
-                for (int i = 0; i < 5; i++) {
-                    Database database = new Database();
-                    database.setName("database" + i);
-                    databases.add(database);
-                }
-                databaseRepository.saveAll(databases);
-            }
 
             private void createJobImplements() {
                 if (jobImplementsRepository.countAllByRowStatus(RowStatus.ACTIVE) <= 0) {
@@ -172,18 +140,12 @@ public class WsApplication {
             private void createApplications() {
                 if (applicationRepository.countAllByRowStatus(RowStatus.ACTIVE) <= 0) {
                     List<Application> applicationList = new ArrayList<>();
-                    List<Database> databases = databaseRepository.findAllByRowStatus(RowStatus.ACTIVE);
-                    List<Frontend> frontends = frontendRepository.findAllByRowStatus(RowStatus.ACTIVE);
-                    List<Backend> backends = backendRepository.findAllByRowStatus(RowStatus.ACTIVE);
                     User user = userService.findByEmail("yamankutay1@gmail.com");
                     for (int i = 0; i < 5; i++) {
                         Application application = new Application();
                         application.setFullName("Application" + i);
                         application.setShortName("App" + i);
                         application.setBusinessAreaType(BusinessAreaType.Manufacturing);
-                        application.setDatabase(databases.get(i));
-                        application.setBackend(backends.get(i));
-                        application.setFrontend(frontends.get(i));
                         application.setLineOfBackendCode(2400);
                         application.setLineOfFrontendCode(1600);
                         application.setUser(user);
