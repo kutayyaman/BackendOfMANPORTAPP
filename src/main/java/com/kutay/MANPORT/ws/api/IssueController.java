@@ -83,6 +83,7 @@ public class IssueController {
 
     // /api/issue/changeStatus/{id}
     @PutMapping("/changeStatus/{id}")
+    @ApiOperation(value = "Change Issue Status", response = ResponseStatus.class)
     public ResponseEntity<?> changeIssueStatusById(@PathVariable Long id,@RequestBody(required = true) IssueDTO status,@CurrentUser User user){
         Boolean booleanStatus = status.getStatus();
         return issueService.changeIssueStatusById(booleanStatus,id,user);

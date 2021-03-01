@@ -1,5 +1,6 @@
 package com.kutay.MANPORT.ws.api;
 
+import com.kutay.MANPORT.ws.dto.TeamDTO;
 import com.kutay.MANPORT.ws.dto.UserDTO;
 import com.kutay.MANPORT.ws.service.IUserService;
 import com.kutay.MANPORT.ws.util.ApiPaths;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 @RestController
@@ -30,6 +32,12 @@ public class UserController {
     @ApiOperation(value = "Create User Operation", response = ResponseEntity.class)
     public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO user) {
         return userService.save(user);
+    }
+
+    @GetMapping("/getByTeam/{teamId}") // /api/user/getByTeam/{teamId}
+    @ApiOperation(value = "Get Users By TeamId", response = List.class)
+    public List<UserDTO> getUsersByTeamId(@PathVariable Long teamId) {
+        return userService.getUsersByTeamId(teamId);
     }
 
 }

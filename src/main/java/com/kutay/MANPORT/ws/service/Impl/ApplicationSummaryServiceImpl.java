@@ -31,7 +31,7 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
 
     @Override
     public GetApplicationsSummaryModel getApplicationsSummary() {
-        List<Application> applicationListOfAll = applicationRepository.findAllByRowStatus(RowStatus.ACTIVE);
+        List<Application> applicationListOfAll = applicationRepository.findAllByRowStatusAndTrack(RowStatus.ACTIVE,true);
         GetApplicationsSummaryModel result;
 
         result = getServerDatasWithCountrFromApplications(applicationListOfAll);

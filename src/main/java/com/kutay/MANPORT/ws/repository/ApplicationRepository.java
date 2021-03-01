@@ -15,7 +15,16 @@ import java.util.List;
 
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
     List<Application> findAllByRowStatus(RowStatus rowStatus);
+    List<Application> findAllByRowStatusAndTrack(RowStatus rowStatus, Boolean bool);
+
+    @Query("select distinct a " +
+            "from Application a " +
+            "left join fetch a.jobInterfaces I " +
+            "where a.rowStatus = :rowStatus")
+    List<Application> findAllByRowStatusWithInterfaces(@Param("rowStatus") RowStatus rowStatus);
+
     int countAllByRowStatus(RowStatus rowStatus);
+
     Page<Application> findAllByRowStatus(RowStatus rowStatus, Pageable pageable);
 
     @Query("select new com.kutay.MANPORT.ws.dto.ApplicationDropListDTO( " +
@@ -35,4 +44,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     Application findFirstByJobInterfaces(JobInterface jobInterface);
 
     Application findFirstById(Long id);
+
+    Application findFirstByIdAndRowStatus(Long id, RowStatus rowStatus);
 }

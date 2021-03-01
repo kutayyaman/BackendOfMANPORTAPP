@@ -1,2 +1,17 @@
-package com.kutay.MANPORT.ws.domain;public class Database {
+package com.kutay.MANPORT.ws.domain;
+
+import lombok.Data;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
+@Entity
+public class Database extends BaseEntity{
+    private String name;
+    @OneToMany(mappedBy = "database", fetch = FetchType.LAZY)
+    private List<Application> applications = new ArrayList<>();
 }

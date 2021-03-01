@@ -138,8 +138,10 @@ public class IssueServiceImpl implements IIssueService {
 
         Issue issue = issueRepository.getOne(issueDTO.getId());
 
-        Application application = new Application();
-        application.setId(issueDTO.getAppId());
+        Application application = applicationService.findFirstById(issueDTO.getAppId());
+        if(application == null){
+            throw new NotFoundException();
+        }
 
         issue.setName(issueDTO.getName());
         issue.setDescription(issueDTO.getDescription());

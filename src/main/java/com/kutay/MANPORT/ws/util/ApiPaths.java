@@ -13,27 +13,43 @@ public final class ApiPaths {
     }
 
     public static final class IssueCtrl {
-        public static final String CTRL = BASE_PATH+"/issue";
+        public static final String CTRL = BASE_PATH + "/issue";
     }
 
     public static final class ApplicationSummaryCtrl {
-        public static final String CTRL = BASE_PATH+"/applicationsummary";
+        public static final String CTRL = BASE_PATH + "/applicationsummary";
     }
 
-    public static final class ApplicationCtrl{
-        public static final String CTRL = BASE_PATH+"/application";
+    public static final class ApplicationCtrl {
+        public static final String CTRL = BASE_PATH + "/application";
     }
 
-    public static final class CountryCtrl{
-        public static final String CTRL = BASE_PATH+"/country";
+    public static final class CountryCtrl {
+        public static final String CTRL = BASE_PATH + "/country";
     }
 
-    public static final class JobInterfaceCtrl{
-        public static final String CTRL = BASE_PATH+"/jobInterface";
+    public static final class JobInterfaceCtrl {
+        public static final String CTRL = BASE_PATH + "/jobInterface";
     }
 
-    public static final class ServerCtrl{
-        public static final String CTRL = BASE_PATH+"/server";
+    public static final class ServerCtrl {
+        public static final String CTRL = BASE_PATH + "/server";
+    }
+
+    public static final class TeamCtrl {
+        public static final String CTRL = BASE_PATH + "/team";
+    }
+
+    public static final class BackendCtrl {
+        public static final String CTRL = BASE_PATH + "/backend";
+    }
+
+    public static final class FrontendCtrl {
+        public static final String CTRL = BASE_PATH + "/frontend";
+    }
+
+    public static final class DatabaseCtrl {
+        public static final String CTRL = BASE_PATH + "/database";
     }
 
 }

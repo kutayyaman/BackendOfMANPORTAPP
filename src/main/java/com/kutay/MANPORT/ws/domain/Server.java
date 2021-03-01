@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -16,4 +17,6 @@ public class Server extends BaseEntity {
     private Country country;
     @OneToMany(mappedBy = "server", fetch = FetchType.EAGER)
     private List<JobImplement> jobImplements = new ArrayList<>();
+    @OneToMany(mappedBy = "server", fetch = FetchType.LAZY)
+    private List<ApplicationServer> applicationServers = new ArrayList<>();
 }
