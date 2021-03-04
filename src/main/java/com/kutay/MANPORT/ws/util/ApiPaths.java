@@ -52,4 +52,8 @@ public final class ApiPaths {
         public static final String CTRL = BASE_PATH + "/database";
     }
 
+    public static final class LinkCtrl {
+        public static final String CTRL = BASE_PATH + "/link";
+    }
+
 }

@@ -30,7 +30,7 @@ public class WsApplication {
 
     //, CountryRepository countryRepository, PlantRepository plantRepository, ServerRoomRepository serverRoomRepository, BackendRepository backendRepository, FrontendRepository frontendRepository, DatabaseRepository databaseRepository, TeamRepository teamRepository, ApplicationRepository applicationRepository, JobRepository jobRepository
     @Bean
-    CommandLineRunner createInitialUsers(IUserService userService, IssueRepository issueRepository, CountryRepository countryRepository, ServerRepository serverRepository, ApplicationRepository applicationRepository, JobInterfaceRepository jobInterfaceRepository, JobImplementsRepository jobImplementsRepository, ApplicationServerRepository applicationServerRepository, TeamRepository teamRepository) { //Spring projesi ayaga kalktigi zaman otomatik olarak bunun run methodu çalışır ve biz bunu başlangıç verileri eklemek için kullanıcaz.
+    CommandLineRunner createInitialUsers(IUserService userService, IssueRepository issueRepository, CountryRepository countryRepository, ServerRepository serverRepository, ApplicationRepository applicationRepository, JobInterfaceRepository jobInterfaceRepository, JobImplementsRepository jobImplementsRepository, ApplicationServerRepository applicationServerRepository, TeamRepository teamRepository, LinkRepository linkRepository) { //Spring projesi ayaga kalktigi zaman otomatik olarak bunun run methodu çalışır ve biz bunu başlangıç verileri eklemek için kullanıcaz.
         return new CommandLineRunner() {
             @Override
             public void run(String... args) throws Exception {
@@ -63,6 +63,9 @@ public class WsApplication {
 
                     List<Application> applicationList = applicationRepository.findAllByRowStatusWithInterfaces(RowStatus.ACTIVE);
                     List<Server> serverList = serverRepository.findAllByRowStatus(RowStatus.ACTIVE);
+                    List<LinkEnvironmentType> linkEnvironmentTypes = Arrays.asList(LinkEnvironmentType.values());
+                    List<LinkType> linkTypes = Arrays.asList(LinkType.values());
+                    List<LinkSpecificType> linkSpecificTypes = Arrays.asList(LinkSpecificType.values());
                     System.out.println("BURDAAA" + applicationList.size());
                     int i = 0;
                     for (Application application : applicationList) {
@@ -80,14 +83,30 @@ public class WsApplication {
                         ApplicationServer applicationServer = new ApplicationServer();
                         applicationServer.setApplication(application);
                         applicationServer.setServer(server);
+
                         applicationServerRepository.save(applicationServer);
                         serverRepository.save(server);
+
+
+                        List<Link> links = new ArrayList<>();
+                        for (int j = 0; j < 3; j++) {
+                            Link link = new Link();
+                            link.setLinkEnvironmentType(linkEnvironmentTypes.get(j%3));
+                            link.setName(linkEnvironmentTypes.get(j%3).toString() + j);
+                            link.setLinkType(linkTypes.get(j%2));
+                            link.setLinkSpecificType(linkSpecificTypes.get(j%2));
+                            link.setUrl(linkEnvironmentTypes.get(j).toString() + ":8080/" + application.getShortName());
+                            link.setApplicationServer(applicationServer);
+                            links.add(link);
+                        }
+                        linkRepository.saveAll(links);
 
                         i++;
                         if (i > 4) {
                             i = 0;
                         }
                     }
+                    //alt kisim app0'i server4'e kurmak icin
                     for (JobInterface jobInterface : applicationList.get(0).getJobInterfaces()) {
                         JobImplement jobImplement = new JobImplement();
                         jobImplement.setJobInterface(jobInterface);
@@ -98,8 +117,10 @@ public class WsApplication {
                     ApplicationServer applicationServer = new ApplicationServer();
                     applicationServer.setApplication(applicationList.get(0));
                     applicationServer.setServer(server);
+
                     applicationServerRepository.save(applicationServer);
                     jobImplementsRepository.saveAll(jobImplements);
+
 
 
                     /*List<JobImplement> jobImplements = new ArrayList<>();

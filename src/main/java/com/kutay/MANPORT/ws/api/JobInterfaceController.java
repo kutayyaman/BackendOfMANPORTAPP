@@ -25,7 +25,7 @@ public class JobInterfaceController {
     }
 
     @GetMapping("/{appId}") // /api/jobInterface/{appId}
-    @ApiOperation(value = "Get JobInterface By appId", response = IssueDTO.class)
+    @ApiOperation(value = "Get JobInterface By appId", response = List.class)
     public List<JobInterfaceDTO> getJobInterfaceByAppId(@PathVariable Long appId) {
         return jobInterfaceService.findAllByApplication(appId);
     }
