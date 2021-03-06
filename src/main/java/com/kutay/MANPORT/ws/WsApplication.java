@@ -30,7 +30,7 @@ public class WsApplication {
 
     //, CountryRepository countryRepository, PlantRepository plantRepository, ServerRoomRepository serverRoomRepository, BackendRepository backendRepository, FrontendRepository frontendRepository, DatabaseRepository databaseRepository, TeamRepository teamRepository, ApplicationRepository applicationRepository, JobRepository jobRepository
     @Bean
-    CommandLineRunner createInitialUsers(IUserService userService, IssueRepository issueRepository, CountryRepository countryRepository, ServerRepository serverRepository, ApplicationRepository applicationRepository, JobInterfaceRepository jobInterfaceRepository, JobImplementsRepository jobImplementsRepository, ApplicationServerRepository applicationServerRepository, TeamRepository teamRepository, LinkRepository linkRepository) { //Spring projesi ayaga kalktigi zaman otomatik olarak bunun run methodu çalışır ve biz bunu başlangıç verileri eklemek için kullanıcaz.
+    CommandLineRunner createInitialUsers(IUserService userService, IssueRepository issueRepository, CountryRepository countryRepository, ServerRepository serverRepository, ApplicationRepository applicationRepository, JobInterfaceRepository jobInterfaceRepository, JobImplementsRepository jobImplementsRepository, ApplicationServerRepository applicationServerRepository, TeamRepository teamRepository, LinkRepository linkRepository, ApplicationCountryRepository applicationCountryRepository) { //Spring projesi ayaga kalktigi zaman otomatik olarak bunun run methodu çalışır ve biz bunu başlangıç verileri eklemek için kullanıcaz.
         return new CommandLineRunner() {
             @Override
             public void run(String... args) throws Exception {
@@ -41,7 +41,7 @@ public class WsApplication {
                     createServers();
                     createApplications();
                     createJobInterfaces();
-                    createJobImplements();
+                    setupApplicationsToServers();
                     createIssues();
                 }
             }
@@ -57,7 +57,7 @@ public class WsApplication {
             }
 
 
-            private void createJobImplements() {
+            private void setupApplicationsToServers() {
                 if (jobImplementsRepository.countAllByRowStatus(RowStatus.ACTIVE) <= 0) {
                     List<JobImplement> jobImplements = new ArrayList<>();
 
@@ -84,6 +84,18 @@ public class WsApplication {
                         applicationServer.setApplication(application);
                         applicationServer.setServer(server);
 
+                        Country country = server.getCountry();
+                        ApplicationCountry applicationCountry = applicationCountryRepository.findFirstByApplicationAndCountryAndRowStatus(application, country, RowStatus.ACTIVE);
+                        if (applicationCountry == null) {
+                            applicationCountry = new ApplicationCountry();
+                            applicationCountry.setApplication(application);
+                            applicationCountry.setCountry(country);
+                            applicationCountry.setCount(1);
+                        } else {
+                            applicationCountry.setCount(applicationCountry.getCount() + 1);
+                        }
+                        applicationCountryRepository.save(applicationCountry);
+
                         applicationServerRepository.save(applicationServer);
                         serverRepository.save(server);
 
@@ -91,10 +103,10 @@ public class WsApplication {
                         List<Link> links = new ArrayList<>();
                         for (int j = 0; j < 3; j++) {
                             Link link = new Link();
-                            link.setLinkEnvironmentType(linkEnvironmentTypes.get(j%3));
-                            link.setName(linkEnvironmentTypes.get(j%3).toString() + j);
-                            link.setLinkType(linkTypes.get(j%2));
-                            link.setLinkSpecificType(linkSpecificTypes.get(j%2));
+                            link.setLinkEnvironmentType(linkEnvironmentTypes.get(j % 3));
+                            link.setName(linkEnvironmentTypes.get(j % 3).toString() + j);
+                            link.setLinkType(linkTypes.get(j % 2));
+                            link.setLinkSpecificType(linkSpecificTypes.get(j % 2));
                             link.setUrl(linkEnvironmentTypes.get(j).toString() + ":8080/" + application.getShortName());
                             link.setApplicationServer(applicationServer);
                             links.add(link);
@@ -118,9 +130,34 @@ public class WsApplication {
                     applicationServer.setApplication(applicationList.get(0));
                     applicationServer.setServer(server);
 
+                    Country country = server.getCountry();
+                    ApplicationCountry applicationCountry = applicationCountryRepository.findFirstByApplicationAndCountryAndRowStatus(applicationList.get(0), country, RowStatus.ACTIVE);
+                    if (applicationCountry == null) {
+                        applicationCountry = new ApplicationCountry();
+                        applicationCountry.setApplication(applicationList.get(0));
+                        applicationCountry.setCountry(country);
+                        applicationCountry.setCount(1);
+                    } else {
+                        applicationCountry.setCount(applicationCountry.getCount() + 1);
+                    }
+                    applicationCountryRepository.save(applicationCountry);
+
+
                     applicationServerRepository.save(applicationServer);
                     jobImplementsRepository.saveAll(jobImplements);
 
+                    List<Link> links = new ArrayList<>();
+                    for (int j = 0; j < 3; j++) {
+                        Link link = new Link();
+                        link.setLinkEnvironmentType(linkEnvironmentTypes.get(j % 3));
+                        link.setName(linkEnvironmentTypes.get(j % 3).toString() + j);
+                        link.setLinkType(linkTypes.get(j % 2));
+                        link.setLinkSpecificType(linkSpecificTypes.get(j % 2));
+                        link.setUrl(linkEnvironmentTypes.get(j).toString() + ":8080/" + applicationList.get(0).getShortName()+"benEkledim");
+                        link.setApplicationServer(applicationServer);
+                        links.add(link);
+                    }
+                    linkRepository.saveAll(links);
 
 
                     /*List<JobImplement> jobImplements = new ArrayList<>();

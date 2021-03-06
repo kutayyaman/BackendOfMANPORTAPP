@@ -30,4 +30,6 @@ public interface IApplicationService {
     List<String> getBusinessAreaTypes();
 
     ApplicationDTO updateApplication(ApplicationDTO applicationDTO, User user);
+
+
 }

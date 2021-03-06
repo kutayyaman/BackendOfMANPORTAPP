@@ -14,4 +14,6 @@ public class Country extends BaseEntity {
     private String name;
     @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
     private List<Server> servers = new ArrayList<>();
+    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
+    private List<ApplicationCountry> applicationCountries = new ArrayList<>();
 }

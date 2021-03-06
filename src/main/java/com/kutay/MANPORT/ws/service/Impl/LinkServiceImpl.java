@@ -4,6 +4,7 @@ import com.kutay.MANPORT.ws.domain.*;
 import com.kutay.MANPORT.ws.dto.LinkDTO;
 import com.kutay.MANPORT.ws.models.managementPageLink.*;
 import com.kutay.MANPORT.ws.repository.LinkRepository;
+import com.kutay.MANPORT.ws.service.IApplicationCountryService;
 import com.kutay.MANPORT.ws.service.ILinkService;
 import org.springframework.stereotype.Service;
 
@@ -12,49 +13,51 @@ import java.util.*;
 @Service
 public class LinkServiceImpl implements ILinkService {
     private final LinkRepository linkRepository;
+    private final IApplicationCountryService applicationCountryService;
 
-    public LinkServiceImpl(LinkRepository linkRepository) {
+    public LinkServiceImpl(LinkRepository linkRepository, IApplicationCountryService applicationCountryService) {
         this.linkRepository = linkRepository;
+        this.applicationCountryService = applicationCountryService;
     }
 
     @Override
     public List<?> getAllLinksSortedForManagementPageByAppId(Long appId) {
         List<ALinkSpecificTypeWithLinks> specificTypeWithLinks = sortLinksBySpecificTypes(linkRepository.getAllLinksByAppIdAndRowStatus(appId, RowStatus.ACTIVE));
 
-        List<ASpecificTypeWithCountriesAndLinks> aSpecificTypeWithCountryAndLinks =  sortByCountryName(specificTypeWithLinks);
+        List<ASpecificTypeWithCountriesAndLinks> aSpecificTypeWithCountryAndLinks = sortByCountryName(specificTypeWithLinks, appId);
         return sortByEnvironmentTypes(aSpecificTypeWithCountryAndLinks);
     }
 
-    private List<?> sortByEnvironmentTypes (List<ASpecificTypeWithCountriesAndLinks> param) {
+    private List<?> sortByEnvironmentTypes(List<ASpecificTypeWithCountriesAndLinks> param) {
         List<ASpecificTypeWithCountriesAndEnvironment> result = new ArrayList<>();
 
         List<LinkEnvironmentType> environmentTypeList = Arrays.asList(LinkEnvironmentType.values().clone());
 
-        for(ASpecificTypeWithCountriesAndLinks aSpecificTypeWithCountriesAndLinks : param){
+        for (ASpecificTypeWithCountriesAndLinks aSpecificTypeWithCountriesAndLinks : param) {
             //Specific name burada var
             ASpecificTypeWithCountriesAndEnvironment aSpecificTypeWithCountriesAndEnvironment = new ASpecificTypeWithCountriesAndEnvironment();
             aSpecificTypeWithCountriesAndEnvironment.setSpecificTypeName(aSpecificTypeWithCountriesAndLinks.getLinkSpecificTypeName());
 
-            for(ACountryNameWithLinks aCountryNameWithLinks : aSpecificTypeWithCountriesAndLinks.getACountryNameWithLinksList()){
+            for (ACountryNameWithLinks aCountryNameWithLinks : aSpecificTypeWithCountriesAndLinks.getACountryNameWithLinksList()) {
                 //countrylerden birindeyiz suan
                 ACountryNameWithEnvironmentTypes aCountryNameWithEnvironmentTypes = new ACountryNameWithEnvironmentTypes();
                 aCountryNameWithEnvironmentTypes.setCountryName(aCountryNameWithLinks.getCountryName());
-                for(LinkEnvironmentType linkEnvironmentType : environmentTypeList){
+                for (LinkEnvironmentType linkEnvironmentType : environmentTypeList) {
                     String linkEnvironmentTypeString = linkEnvironmentType.toString();
 
                     AnEnvironmentTypeWithLinks anEnvironmentTypeWithLinks = new AnEnvironmentTypeWithLinks();
                     anEnvironmentTypeWithLinks.setEnvironmentTypeName(linkEnvironmentTypeString);
 
-                    for(LinkDTO linkDTO : aCountryNameWithLinks.getLinkDTOList()){
-                        if(linkDTO.getLinkEnvironmentType().equals(linkEnvironmentTypeString)){
+                    for (LinkDTO linkDTO : aCountryNameWithLinks.getLinkDTOList()) {
+                        if (linkDTO.getLinkEnvironmentType().equals(linkEnvironmentTypeString)) {
                             anEnvironmentTypeWithLinks.getLinkDTOList().add(linkDTO);
                         }
                     }
-                    if(anEnvironmentTypeWithLinks.getLinkDTOList().size()>0){
+                    if (anEnvironmentTypeWithLinks.getLinkDTOList().size() > 0) {
                         aCountryNameWithEnvironmentTypes.getAnEnvironmentTypeWithLinks().add(anEnvironmentTypeWithLinks);
                     }
                 }
-                if(aCountryNameWithEnvironmentTypes.getAnEnvironmentTypeWithLinks().size()>0){
+                if (aCountryNameWithEnvironmentTypes.getAnEnvironmentTypeWithLinks().size() > 0) {
                     aSpecificTypeWithCountriesAndEnvironment.getACountryNameWithEnvironmentTypes().add(aCountryNameWithEnvironmentTypes);
                 }
             }
@@ -64,14 +67,21 @@ public class LinkServiceImpl implements ILinkService {
         return result;
     }
 
-    private List<ASpecificTypeWithCountriesAndLinks> sortByCountryName(List<ALinkSpecificTypeWithLinks> param) {
+    private List<ASpecificTypeWithCountriesAndLinks> sortByCountryName(List<ALinkSpecificTypeWithLinks> param, Long appId) {
         List<ASpecificTypeWithCountriesAndLinks> result = new ArrayList<>();
 
         Set<String> countryNameList = new HashSet<>();
         for (ALinkSpecificTypeWithLinks aLinkSpecificTypeWithLinks : param) {
             List<LinkDTO> linkDTOList = aLinkSpecificTypeWithLinks.getLinks();
             for (LinkDTO linkDTO : linkDTOList) {
-                countryNameList.add(linkDTO.getCountryName());
+                Application application = new Application();
+                application.setId(appId);
+                Country country = new Country();
+                country.setId(linkDTO.getCountryId());
+                ApplicationCountry applicationCountry = applicationCountryService.findFirstByApplicationAndCountry(application, country);
+                if (applicationCountry.isAlive()) {
+                    countryNameList.add(linkDTO.getCountryName());
+                }
             }
         }
 
@@ -82,12 +92,12 @@ public class LinkServiceImpl implements ILinkService {
 
             List<LinkDTO> linkDTOList = aLinkSpecificTypeWithLinks.getLinks();
 
-            for(String countryName : countryNameList){
+            for (String countryName : countryNameList) {
                 ACountryNameWithLinks aCountryNameWithLinks = new ACountryNameWithLinks();
                 aCountryNameWithLinks.setCountryName(countryName);
 
-                for(LinkDTO linkDTO : linkDTOList) {
-                    if(countryName.equals(linkDTO.getCountryName())){
+                for (LinkDTO linkDTO : linkDTOList) {
+                    if (countryName.equals(linkDTO.getCountryName())) {
                         aCountryNameWithLinks.getLinkDTOList().add(linkDTO);
                     }
                 }

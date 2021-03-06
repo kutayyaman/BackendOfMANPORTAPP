@@ -40,3 +40,6 @@ src/main/java/com/kutay/MANPORT/ws/domain/FrontendInterface.java
 src/main/java/com/kutay/MANPORT/ws/repository/FrontendImplementRepository.java
 src/main/java/com/kutay/MANPORT/ws/repository/FrontendInterfaceRepository.java
 src/main/java/com/kutay/MANPORT/ws/repository/FrontendTypeRepository.java
+MANPORTAppDBDIAGRAM.png
+src/main/java/com/kutay/MANPORT/ws/service/IApplicationServerService.java
+src/main/java/com/kutay/MANPORT/ws/service/Impl/ApplicationServerServiceImpl.java

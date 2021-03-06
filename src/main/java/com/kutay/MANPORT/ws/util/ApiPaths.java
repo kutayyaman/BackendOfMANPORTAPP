@@ -56,4 +56,8 @@ public final class ApiPaths {
         public static final String CTRL = BASE_PATH + "/link";
     }
 
+    public static final class ApplicationCountryCtrl {
+        public static final String CTRL = BASE_PATH + "/applicationCountry";
+    }
+
 }

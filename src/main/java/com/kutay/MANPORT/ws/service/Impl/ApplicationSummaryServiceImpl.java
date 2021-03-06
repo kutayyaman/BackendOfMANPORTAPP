@@ -5,13 +5,13 @@ import com.kutay.MANPORT.ws.dto.IssueDTO;
 import com.kutay.MANPORT.ws.models.*;
 import com.kutay.MANPORT.ws.repository.ApplicationRepository;
 import com.kutay.MANPORT.ws.repository.IssueRepository;
+import com.kutay.MANPORT.ws.service.IApplicationCountryService;
 import com.kutay.MANPORT.ws.service.IApplicationSummaryService;
 import com.kutay.MANPORT.ws.service.IServerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -21,17 +21,19 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
     private final IServerService serverService;
     private final ModelMapper modelMapper;
     private final IssueRepository issueRepository;
+    private final IApplicationCountryService applicationCountryService;
 
-    public ApplicationSummaryServiceImpl(ApplicationRepository applicationRepository, IServerService serverService, ModelMapper modelMapper, IssueRepository issueRepository) {
+    public ApplicationSummaryServiceImpl(ApplicationRepository applicationRepository, IServerService serverService, ModelMapper modelMapper, IssueRepository issueRepository, IApplicationCountryService applicationCountryService) {
         this.applicationRepository = applicationRepository;
         this.serverService = serverService;
         this.modelMapper = modelMapper;
         this.issueRepository = issueRepository;
+        this.applicationCountryService = applicationCountryService;
     }
 
     @Override
     public GetApplicationsSummaryModel getApplicationsSummary() {
-        List<Application> applicationListOfAll = applicationRepository.findAllByRowStatusAndTrack(RowStatus.ACTIVE,true);
+        List<Application> applicationListOfAll = applicationRepository.findAllByRowStatusAndTrack(RowStatus.ACTIVE, true);
         GetApplicationsSummaryModel result;
 
         result = getServerDatasWithCountrFromApplications(applicationListOfAll);
@@ -48,14 +50,13 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
         return tempResult;
     }
 
-    private List<AnAppWithCountriesModel> sortAppListByIssue(List<AnAppWithCountriesModel> appList){
+    private List<AnAppWithCountriesModel> sortAppListByIssue(List<AnAppWithCountriesModel> appList) {
         List<AnAppWithCountriesModel> appsHaveIssue = new ArrayList<>();
         List<AnAppWithCountriesModel> appsNotHaveIssue = new ArrayList<>();
-        for(AnAppWithCountriesModel app : appList){
-            if(app.getHighestImpactOfApp()==null){
+        for (AnAppWithCountriesModel app : appList) {
+            if (app.getHighestImpactOfApp() == null) {
                 appsNotHaveIssue.add(app);
-            }
-            else{
+            } else {
                 appsHaveIssue.add(app);
             }
         }
@@ -111,14 +112,14 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
                             aJobWithIssuesModel.setHighestImpactOfJob(highestImpactTypeOfJob.toString());
                         }
                         aServerWithJobsModel.getJobAndIssues().add(aJobWithIssuesModel);
-                        highestImpactTypeOfServer = getHighestImpactType(highestImpactTypeOfServer,highestImpactTypeOfJob);
+                        highestImpactTypeOfServer = getHighestImpactType(highestImpactTypeOfServer, highestImpactTypeOfJob);
 
                     }
                     if (highestImpactTypeOfServer != null) {
                         aServerWithJobsModel.setHighestImpactOfServer(highestImpactTypeOfServer.toString());
                     }
                     aCountryWithServers.getAServerWithJobsList().add(aServerWithJobsModel);
-                    highestImpactTypeOfCountry = getHighestImpactType(highestImpactTypeOfCountry,highestImpactTypeOfServer);
+                    highestImpactTypeOfCountry = getHighestImpactType(highestImpactTypeOfCountry, highestImpactTypeOfServer);
                 }
                 anAppWithCountriesModel.setAppId(application.getId());
                 anAppWithCountriesModel.setAppName(application.getShortName());
@@ -127,7 +128,7 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
                 }
                 anAppWithCountriesModel.getACountryWithServersList().add(aCountryWithServers);
 
-                highestImpactTypeOfApp = getHighestImpactType(highestImpactTypeOfApp,highestImpactTypeOfCountry);
+                highestImpactTypeOfApp = getHighestImpactType(highestImpactTypeOfApp, highestImpactTypeOfCountry);
 
             }
             if (highestImpactTypeOfApp != null) {
@@ -175,7 +176,17 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
     }
 
     private List<Country> findCountryListOfApplication(Application application) {
-        HashSet<Country> countries = new HashSet<>();
+        List<Country> countryList = new ArrayList<>();
+
+        List<ApplicationCountry> applicationCountries = applicationCountryService.findAllByApplication(application);
+        for (ApplicationCountry applicationCountry : applicationCountries) {
+            if (applicationCountry.isTrack() && applicationCountry.getCount() > 0)
+                countryList.add(applicationCountry.getCountry());
+        }
+
+        return countryList;
+
+        /*HashSet<Country> countries = new HashSet<>();
         List<Country> countryList = new ArrayList<>();
         List<JobInterface> jobInterfaces = application.getJobInterfaces();
         JobInterface jobInterface = jobInterfaces.get(0); //zaten bir sunucuda bu app bulunuyorsa bu app'in butun interfaceleri olmak zorunda o yuzden 1 tanesine baksam yeterli.
@@ -188,7 +199,7 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
             countryList.add(country);
         }
 
-        return countryList;
+        return countryList;*/
     }
 
     private List<Server> findServerListOfApplicationInACountry(Application application, Country country) {
@@ -219,7 +230,7 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
     }
 
     private List<Issue> findIssuesByJobImplement(JobImplement jobImplement) {
-        return issueRepository.findAllByJobImplementAndRowStatus(jobImplement,RowStatus.ACTIVE);
+        return issueRepository.findAllByJobImplementAndRowStatus(jobImplement, RowStatus.ACTIVE);
     }
 
     private List<String> getNameListOfServers(List<Server> serverList) {

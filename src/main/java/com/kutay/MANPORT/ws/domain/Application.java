@@ -18,7 +18,7 @@ public class Application extends BaseEntity implements Cloneable {
     private String releaseDate;
     private int lineOfBackendCode;
     private int lineOfFrontendCode;
-    @ManyToOne( fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;
     @Enumerated(EnumType.STRING)
@@ -29,6 +29,8 @@ public class Application extends BaseEntity implements Cloneable {
     private List<Issue> issues = new ArrayList<>();
     @OneToMany(mappedBy = "application", fetch = FetchType.LAZY)
     private List<ApplicationServer> applicationServers = new ArrayList<>();
+    @OneToMany(mappedBy = "application", fetch = FetchType.LAZY)
+    private List<ApplicationCountry> applicationCountries = new ArrayList<>();
 
     @Override
     public Object clone() throws CloneNotSupportedException {
