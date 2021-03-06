@@ -1,6 +1,7 @@
 package com.kutay.MANPORT.ws.service;
 
 import com.kutay.MANPORT.ws.MyAnnotations.CurrentUser;
+import com.kutay.MANPORT.ws.domain.Application;
 import com.kutay.MANPORT.ws.domain.Issue;
 import com.kutay.MANPORT.ws.domain.RowStatus;
 import com.kutay.MANPORT.ws.domain.User;
@@ -30,4 +31,8 @@ public interface IIssueService {
     ResponseEntity<?> deleteIssueById(Long id);
 
     ResponseEntity<?> changeIssueStatusById(Boolean status, Long id, User user);
+
+    ResponseEntity<?> changeIssueTrackById(Boolean track, Long id, User user);
+
+    PageableDTO<?> findAllByAppId(Long appId, Pageable pageable);
 }

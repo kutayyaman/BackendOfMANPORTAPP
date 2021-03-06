@@ -102,10 +102,12 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
                         ImpactType highestImpactTypeOfJob = null;
 
                         for (Issue issue : issues) {
-                            IssueDTO issueDTO = setIssueToIssueDTO(issue);
-                            aJobWithIssuesModel.getIssueDTOList().add(issueDTO);
+                            if(issue.getTrack()){
+                                IssueDTO issueDTO = setIssueToIssueDTO(issue);
+                                aJobWithIssuesModel.getIssueDTOList().add(issueDTO);
 
-                            highestImpactTypeOfJob = getHighestImpactType(highestImpactTypeOfJob, issue.getImpactType());
+                                highestImpactTypeOfJob = getHighestImpactType(highestImpactTypeOfJob, issue.getImpactType());
+                            }
 
                         }
                         if (highestImpactTypeOfJob != null) {

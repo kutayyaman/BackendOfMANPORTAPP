@@ -14,33 +14,35 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IssueDTO {
-    @ApiModelProperty(required = true,value = "id")
+    @ApiModelProperty(required = true, value = "id")
     private long id;
-    @ApiModelProperty(required = true,value = "name")
+    @ApiModelProperty(required = true, value = "name")
     private String name;
-    @ApiModelProperty(required = true,value = "description")
+    @ApiModelProperty(required = true, value = "description")
     private String description;
-    @ApiModelProperty(required = true,value = "impact")
+    @ApiModelProperty(required = true, value = "impact")
     private String impact;
-    @ApiModelProperty(required = true,value = "createdDate")
+    @ApiModelProperty(required = true, value = "createdDate")
     private String createdDate;
-    @ApiModelProperty(required = true,value = "appName")
+    @ApiModelProperty(required = true, value = "appName")
     private String appShortName;
-    @ApiModelProperty(required = true,value = "appId")
+    @ApiModelProperty(required = true, value = "appId")
     private Long appId;
-    @ApiModelProperty(required = true,value = "jobName")
+    @ApiModelProperty(required = true, value = "jobName")
     private String jobName;
-    @ApiModelProperty(required = true,value = "jobInterfaceId")
+    @ApiModelProperty(required = true, value = "jobInterfaceId")
     private Long jobInterfaceId;
-    @ApiModelProperty(required = true,value = "countryName")
+    @ApiModelProperty(required = true, value = "countryName")
     private String countryName;
-    @ApiModelProperty(required = true,value = "countryId")
+    @ApiModelProperty(required = true, value = "countryId")
     private Long countryId;
-    @ApiModelProperty(required = true,value = "status")
-    private Boolean status=true;
-    @ApiModelProperty(required = true,value = "serverName")
+    @ApiModelProperty(required = true, value = "status")
+    private Boolean status = true;
+    @ApiModelProperty(required = true, value = "track")
+    private Boolean track = true;
+    @ApiModelProperty(required = true, value = "serverName")
     private String serverName;
-    @ApiModelProperty(required = true,value = "serverId")
+    @ApiModelProperty(required = true, value = "serverId")
     private Long serverId;
 
     public IssueDTO(Issue issue) {

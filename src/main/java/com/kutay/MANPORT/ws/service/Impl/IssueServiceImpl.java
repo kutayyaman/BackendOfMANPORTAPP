@@ -139,7 +139,7 @@ public class IssueServiceImpl implements IIssueService {
         Issue issue = issueRepository.getOne(issueDTO.getId());
 
         Application application = applicationService.findFirstById(issueDTO.getAppId());
-        if(application == null){
+        if (application == null) {
             throw new NotFoundException();
         }
 
@@ -174,6 +174,9 @@ public class IssueServiceImpl implements IIssueService {
     @Override
     public ResponseEntity<?> changeIssueStatusById(Boolean status, Long id, User user) {
         Issue issue = issueRepository.findFirstByIdAndRowStatus(id, RowStatus.ACTIVE);
+        if(issue == null){
+            throw new NotFoundException();
+        }
         issue.setStatus(status);
         issue.setModifiedDate(CurrentDateCreator.currentDateAsString());
         issue.setModifiedBy(user.getEmail());
@@ -182,6 +185,37 @@ public class IssueServiceImpl implements IIssueService {
         Locale locale = LocaleContextHolder.getLocale();
         String message = messageSource.getMessage("manportapp.info.issue.status.changed", null, locale);
         return ResponseEntity.ok().body(message);
+    }
+
+    @Override
+    public ResponseEntity<?> changeIssueTrackById(Boolean track, Long id, User user) {
+        Issue issue = issueRepository.findFirstByIdAndRowStatus(id, RowStatus.ACTIVE);
+        if(issue == null){
+            throw new NotFoundException();
+        }
+        issue.setTrack(track);
+        issue.setModifiedDate(CurrentDateCreator.currentDateAsString());
+        issue.setModifiedBy(user.getEmail());
+        issueRepository.save(issue);
+
+
+        Locale locale = LocaleContextHolder.getLocale();
+        String message = messageSource.getMessage("manportapp.info.issue.track.changed", null, locale);
+        return ResponseEntity.ok().body(message);
+    }
+
+    @Override
+    public PageableDTO<?> findAllByAppId(Long appId, Pageable pageable) {
+        PageableDTO<IssueDTO> result;
+
+        Application application = applicationService.findFirstById(appId);
+        if (application == null) {
+            throw new NotFoundException();
+        }
+        Page<Issue> issuePage = issueRepository.findAllByRowStatusAndApplication(RowStatus.ACTIVE, application, pageable);
+
+        result = convertToPageableIssueDto(issuePage);
+        return result;
     }
 
     private JobImplement findJobImplementInAListByJobInterfaceId(List<JobImplement> jobImplements, Long jobInterfaceId) {
@@ -238,6 +272,7 @@ public class IssueServiceImpl implements IIssueService {
             issueDTO.setJobInterfaceId(jobInterface.getId());
             issueDTO.setServerName(server.getName());
             issueDTO.setServerId(server.getId());
+            issueDTO.setTrack(issue.getTrack());
 
 
             issueDTOS.add(issueDTO);

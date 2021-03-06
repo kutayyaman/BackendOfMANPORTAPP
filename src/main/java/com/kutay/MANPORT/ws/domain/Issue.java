@@ -15,6 +15,7 @@ public class Issue extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ImpactType impactType;
     private Boolean status=true;
+    private Boolean track=true;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="applicationId")
     private Application application;

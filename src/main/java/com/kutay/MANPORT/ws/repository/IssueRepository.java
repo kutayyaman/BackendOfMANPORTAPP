@@ -23,8 +23,6 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
 
     Page<Issue> findAllByRowStatus(RowStatus rowStatus, Pageable pageable);
 
-    Page<Issue> findAllByRowStatusAndApplication(RowStatus rowStatus, Application application, Pageable pageable);
-
     @Query(
             "select I " +
                     "from Issue I " +
@@ -66,6 +64,14 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
     Page<Issue> findAllByRowStatusAndCreatedDateBetween(RowStatus rowStatus, String dateFrom, String dateTo, Pageable pageable);
 
     Issue findFirstByIdAndRowStatus(Long id, RowStatus rowStatus);
+
+    @Query(
+            "select I " +
+                    "from Issue I " +
+                    "where I.rowStatus = :rowStatus " +
+                    "and I.application = :application "
+    )
+    Page<Issue> findAllByRowStatusAndApplication(RowStatus rowStatus, Application application, Pageable pageable);
 
     /*@Query(
             "update Issue I " +

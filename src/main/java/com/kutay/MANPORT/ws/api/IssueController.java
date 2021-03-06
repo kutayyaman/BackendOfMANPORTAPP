@@ -84,8 +84,23 @@ public class IssueController {
     // /api/issue/changeStatus/{id}
     @PutMapping("/changeStatus/{id}")
     @ApiOperation(value = "Change Issue Status", response = ResponseStatus.class)
-    public ResponseEntity<?> changeIssueStatusById(@PathVariable Long id,@RequestBody(required = true) IssueDTO status,@CurrentUser User user){
+    public ResponseEntity<?> changeIssueStatusById(@PathVariable Long id, @RequestBody(required = true) IssueDTO status, @CurrentUser User user) {
         Boolean booleanStatus = status.getStatus();
-        return issueService.changeIssueStatusById(booleanStatus,id,user);
+        return issueService.changeIssueStatusById(booleanStatus, id, user);
+    }
+
+    // /api/issue/changeTrack/{id}
+    @PutMapping("/changeTrack/{id}")
+    @ApiOperation(value = "Change Issue Track", response = ResponseStatus.class)
+    public ResponseEntity<?> changeIssueTrackById(@PathVariable Long id, @RequestBody(required = true) IssueDTO status, @CurrentUser User user) {
+        Boolean booleanTrack = status.getTrack();
+        return issueService.changeIssueTrackById(booleanTrack, id, user);
+    }
+
+    // /api/issue/getByAppId
+    @GetMapping("/getByAppId/{id}")
+    @ApiOperation(value = "Get Issues By AppId", response = PageableDTO.class)
+    public PageableDTO<?> getByAppId(@PathVariable Long id, Pageable pageable) {
+        return issueService.findAllByAppId(id, pageable);
     }
 }
