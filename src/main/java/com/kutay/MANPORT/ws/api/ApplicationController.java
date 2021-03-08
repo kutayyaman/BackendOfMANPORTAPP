@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -80,4 +81,17 @@ public class ApplicationController {
         return applicationService.updateApplication(applicationDTO, currentUser);
     }
 
+    // /api/application
+    @PostMapping()
+    @ApiOperation(value = "Add Application Operation", response = ApplicationDTO.class)
+    public ApplicationDTO addApplication(@Valid @RequestBody(required = true) ApplicationDTO applicationDTO, @CurrentUser User currentUser) {
+        return applicationService.addApplication(applicationDTO, currentUser);
+    }
+
+    // /api/application/setup
+    @PostMapping("/setup")
+    @ApiOperation(value = "Setup An Application In A Server", response = SetupApplicationDTO.class)
+    public SetupApplicationDTO setupAnApplicationInAServer(@Valid @RequestBody(required = true) SetupApplicationDTO setupApplicationDTO, @CurrentUser User currentUser) {
+        return applicationService.setupAnApplicationInAServer(setupApplicationDTO, currentUser);
+    }
 }

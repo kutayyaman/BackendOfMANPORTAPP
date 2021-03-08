@@ -3,10 +3,7 @@ package com.kutay.MANPORT.ws.service;
 import com.kutay.MANPORT.ws.domain.Application;
 import com.kutay.MANPORT.ws.domain.Issue;
 import com.kutay.MANPORT.ws.domain.User;
-import com.kutay.MANPORT.ws.dto.ApplicationDTO;
-import com.kutay.MANPORT.ws.dto.ApplicationDTOForManagementPage;
-import com.kutay.MANPORT.ws.dto.ApplicationDropListDTO;
-import com.kutay.MANPORT.ws.dto.PageableDTO;
+import com.kutay.MANPORT.ws.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -31,5 +28,7 @@ public interface IApplicationService {
 
     ApplicationDTO updateApplication(ApplicationDTO applicationDTO, User user);
 
+    ApplicationDTO addApplication(ApplicationDTO applicationDTO, User user);
 
+    SetupApplicationDTO setupAnApplicationInAServer(SetupApplicationDTO setupApplicationDTO, User currentUser);
 }

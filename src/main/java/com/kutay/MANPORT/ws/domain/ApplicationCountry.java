@@ -1,5 +1,6 @@
 package com.kutay.MANPORT.ws.domain;
 
+import com.kutay.MANPORT.ws.dto.ApplicationCountryDTO;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -20,4 +21,5 @@ public class ApplicationCountry extends BaseEntity {
     private boolean track = true;
     private boolean alive = true;
     private int count = 0; // bu application bu ulkeye her kuruldugunda bunun sayisi 1 artacak her silindiginde bir azalacak ki bu ulkede kac tane var bilelim
+
 }

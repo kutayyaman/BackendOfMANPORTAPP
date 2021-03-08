@@ -1,14 +1,11 @@
 package com.kutay.MANPORT.ws.service.Impl;
 
-import com.kutay.MANPORT.ws.MyAnnotations.CurrentUser;
 import com.kutay.MANPORT.ws.domain.*;
-import com.kutay.MANPORT.ws.dto.ApplicationDTO;
-import com.kutay.MANPORT.ws.dto.ApplicationDTOForManagementPage;
-import com.kutay.MANPORT.ws.dto.ApplicationDropListDTO;
-import com.kutay.MANPORT.ws.dto.PageableDTO;
+import com.kutay.MANPORT.ws.dto.*;
 import com.kutay.MANPORT.ws.error.CloneException;
 import com.kutay.MANPORT.ws.error.NotFoundException;
 import com.kutay.MANPORT.ws.repository.ApplicationRepository;
+import com.kutay.MANPORT.ws.repository.JobImplementsRepository;
 import com.kutay.MANPORT.ws.service.*;
 import com.kutay.MANPORT.ws.util.CurrentDateCreator;
 import org.modelmapper.ModelMapper;
@@ -25,11 +22,19 @@ public class ApplicationServiceImpl implements IApplicationService {
     private final ApplicationRepository applicationRepository;
     private final ModelMapper modelMapper;
     private final IUserService userService;
+    private final IServerService serverService;
+    private final IApplicationCountryService applicationCountryService;
+    private final IApplicationServerService applicationServerService;
+    private final IJobImplementService jobImplementService;
 
-    public ApplicationServiceImpl(ApplicationRepository applicationRepository, ModelMapper modelMapper, IUserService userService) {
+    public ApplicationServiceImpl(ApplicationRepository applicationRepository, ModelMapper modelMapper, IUserService userService, IServerService serverService, IApplicationCountryService applicationCountryService, IApplicationServerService applicationServerService, JobImplementsRepository jobImplementsRepository, IJobImplementService jobImplementService) {
         this.applicationRepository = applicationRepository;
         this.modelMapper = modelMapper;
         this.userService = userService;
+        this.serverService = serverService;
+        this.applicationCountryService = applicationCountryService;
+        this.applicationServerService = applicationServerService;
+        this.jobImplementService = jobImplementService;
     }
 
     @Override
@@ -109,18 +114,68 @@ public class ApplicationServiceImpl implements IApplicationService {
         if (application == null) {
             throw new NotFoundException();
         }
+        application.setModifiedDate(CurrentDateCreator.currentDateAsString());
+        if (currentUser != null) {
+            application.setModifiedBy(currentUser.getEmail());
+        }
+        return saveApplication(applicationDTO, currentUser, application);
+    }
 
+    @Override
+    public ApplicationDTO addApplication(ApplicationDTO applicationDTO, User currentUser) {
+        Application newApplication = new Application();
+        newApplication.setCreatedDate(CurrentDateCreator.currentDateAsString());
+        if (currentUser != null) {
+            newApplication.setCreatedBy(currentUser.getEmail());
+        }
+        return saveApplication(applicationDTO, currentUser, newApplication);
+    }
+
+    @Override
+    public SetupApplicationDTO setupAnApplicationInAServer(SetupApplicationDTO setupApplicationDTO, User currentUser) {
+        Application application = applicationRepository.findFirstByIdAndRowStatus(setupApplicationDTO.getAppId(), RowStatus.ACTIVE);
+        Server server = serverService.findFirstById(setupApplicationDTO.getServerId());
+
+        List<JobImplement> jobImplements = new ArrayList<>();
+
+        for (JobInterface jobInterface : application.getJobInterfaces()) {
+            JobImplement jobImplement = new JobImplement();
+            jobImplement.setJobInterface(jobInterface);
+            jobImplement.setServer(server);
+            jobImplements.add(jobImplement);
+        }
+
+        ApplicationServer applicationServer = new ApplicationServer();
+        applicationServer.setApplication(application);
+        applicationServer.setServer(server);
+
+        Country country = server.getCountry();
+
+        ApplicationCountry applicationCountry = applicationCountryService.findFirstByApplicationAndCountryAndRowStatus(application, country, RowStatus.ACTIVE);
+        if (applicationCountry == null) {
+            applicationCountry = new ApplicationCountry();
+            applicationCountry.setApplication(application);
+            applicationCountry.setCountry(country);
+            applicationCountry.setCount(1);
+        } else {
+            applicationCountry.setCount(applicationCountry.getCount() + 1);
+        }
+
+        applicationCountryService.save(applicationCountry);
+        applicationServerService.save(applicationServer);
+        jobImplementService.saveAll(jobImplements);
+
+        return setupApplicationDTO;
+    }
+
+    private ApplicationDTO saveApplication(ApplicationDTO applicationDTO, User currentUser, Application newApplication) {
         try {
-            application = setApplicationDTOToApplication(applicationDTO, application);
-            application.setModifiedDate(CurrentDateCreator.currentDateAsString());
-            if (currentUser != null) {
-                application.setModifiedBy(currentUser.getEmail());
-            }
+            newApplication = setApplicationDTOToApplication(applicationDTO, newApplication);
         } catch (CloneNotSupportedException e) {
             throw new CloneException();
         }
 
-        applicationRepository.save(application);
+        applicationRepository.save(newApplication);
         return applicationDTO;
     }
 

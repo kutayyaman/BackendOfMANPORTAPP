@@ -12,6 +12,7 @@ import com.kutay.MANPORT.ws.repository.ApplicationCountryRepository;
 import com.kutay.MANPORT.ws.service.IApplicationCountryService;
 import com.kutay.MANPORT.ws.service.IApplicationService;
 import com.kutay.MANPORT.ws.service.ICountryService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class ApplicationCountryServiceImpl implements IApplicationCountryService
     private final IApplicationService applicationService;
     private final ICountryService countryService;
 
-    public ApplicationCountryServiceImpl(ApplicationCountryRepository applicationCountryRepository, IApplicationService applicationService, ICountryService countryService) {
+    public ApplicationCountryServiceImpl(ApplicationCountryRepository applicationCountryRepository, @Lazy IApplicationService applicationService, ICountryService countryService) {
         this.applicationCountryRepository = applicationCountryRepository;
         this.applicationService = applicationService;
         this.countryService = countryService;
@@ -83,6 +84,24 @@ public class ApplicationCountryServiceImpl implements IApplicationCountryService
 
         ApplicationCountryDTO applicationCountryDTO = new ApplicationCountryDTO(applicationCountry);
         return applicationCountryDTO;
+    }
+
+    @Override
+    public ApplicationCountryDTO findFirstByApplicationAndCountryAndRowStatusRETURNDTO(Application application, Country country, RowStatus rowStatus) {
+        ApplicationCountry applicationCountry = applicationCountryRepository.findFirstByApplicationAndCountryAndRowStatus(application, country, RowStatus.ACTIVE);
+
+        ApplicationCountryDTO applicationCountryDTO = new ApplicationCountryDTO(applicationCountry);
+        return applicationCountryDTO;
+    }
+
+    @Override
+    public ApplicationCountry findFirstByApplicationAndCountryAndRowStatus(Application application, Country country, RowStatus rowStatus) {
+        return applicationCountryRepository.findFirstByApplicationAndCountryAndRowStatus(application, country, RowStatus.ACTIVE);
+    }
+
+    @Override
+    public ApplicationCountry save(ApplicationCountry applicationCountry) {
+        return applicationCountryRepository.save(applicationCountry);
     }
 
     private ApplicationCountry getApplicationCountry(Long appId, Long countryId) {
