@@ -18,8 +18,10 @@ public class User extends BaseEntity implements UserDetails {
     private String surname;
     private String email;
     private String password;
-    private String lastLoginDate;
-    private String birthdayDate;
+    @Temporal(TemporalType.DATE)
+    private Date lastLoginDate;
+    @Temporal(TemporalType.DATE)
+    private Date birthdayDate;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "USER_ROLE",
             joinColumns = @JoinColumn(name = "USER_ID"),

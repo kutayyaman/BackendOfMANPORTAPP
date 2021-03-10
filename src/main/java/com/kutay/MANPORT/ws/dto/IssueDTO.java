@@ -50,7 +50,7 @@ public class IssueDTO {
         this.name = issue.getName();
         this.description = issue.getDescription();
         this.impact = issue.getImpactType().toString();
-        this.createdDate = issue.getCreatedDate();
+        this.createdDate = issue.getCreatedDate().toString();
         this.appShortName = issue.getApplication().getShortName();
         this.jobName = issue.getJobImplement().getJobInterface().getName();
         this.countryName = issue.getJobImplement().getServer().getCountry().getName();

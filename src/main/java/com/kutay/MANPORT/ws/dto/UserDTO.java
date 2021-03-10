@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Data
 @ApiModel(value = "User Data Transfer Object")
@@ -63,11 +64,20 @@ public class UserDTO {
         this.surname = user.getSurname();
         this.email = user.getEmail();
         this.password = user.getPassword();
-        this.lastLoginDate = user.getLastLoginDate();
-        this.birthdayDate = user.getBirthdayDate();
+        Date lastLoginDate = user.getLastLoginDate();
+        if(lastLoginDate!=null){
+            this.lastLoginDate = lastLoginDate.toString();
+        }
+        Date birthdayDate = user.getBirthdayDate();
+        if(birthdayDate!=null){
+            this.birthdayDate = birthdayDate.toString();
+        }
         this.id = user.getId();
-        this.createdDate = user.getCreatedDate();
-        this.modifiedDate = user.getModifiedDate();
+        this.createdDate = user.getCreatedDate().toString();
+        Date modifiedDate = user.getModifiedDate();
+        if(modifiedDate!=null){
+            this.modifiedDate = modifiedDate.toString();
+        }
         this.createdBy = user.getCreatedBy();
         this.modifiedBy = user.getModifiedBy();
         this.rowStatus = user.getRowStatus();

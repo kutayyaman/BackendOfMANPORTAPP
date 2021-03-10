@@ -13,8 +13,10 @@ public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String createdDate = CurrentDateCreator.currentDateAsString();
-    private String modifiedDate;
+    @Temporal(TemporalType.DATE)
+    private Date createdDate = CurrentDateCreator.currentDateAsDate();
+    @Temporal(TemporalType.DATE)
+    private Date modifiedDate;
     private String createdBy;
     private String modifiedBy;
     @Enumerated(EnumType.STRING)

@@ -31,4 +31,6 @@ public interface IApplicationService {
     ApplicationDTO addApplication(ApplicationDTO applicationDTO, User user);
 
     SetupApplicationDTO setupAnApplicationInAServer(SetupApplicationDTO setupApplicationDTO, User currentUser);
+
+    Application findAllByIdAndRowStatusWithApplicationServers(Long id);
 }

@@ -15,7 +15,16 @@ import java.util.List;
 
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
     List<Application> findAllByRowStatus(RowStatus rowStatus);
+
     List<Application> findAllByRowStatusAndTrack(RowStatus rowStatus, Boolean bool);
+
+    @Query("select a " +
+            "from Application a " +
+            "left join fetch a.applicationServers appServers " +
+            "left join fetch appServers.server " +
+            "where a.id= :id " +
+            "and a.rowStatus = :rowStatus ")
+    Application findAllByIdAndRowStatusWithApplicationServers(Long id, RowStatus rowStatus);
 
     @Query("select distinct a " +
             "from Application a " +

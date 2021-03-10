@@ -152,7 +152,7 @@ public class IssueServiceImpl implements IIssueService {
         if (user != null) {
             issue.setModifiedBy(user.getEmail());
         }
-        issue.setModifiedDate(CurrentDateCreator.currentDateAsString());
+        issue.setModifiedDate(CurrentDateCreator.currentDateAsDate());
         issueRepository.save(issue);
 
 
@@ -178,7 +178,7 @@ public class IssueServiceImpl implements IIssueService {
             throw new NotFoundException();
         }
         issue.setStatus(status);
-        issue.setModifiedDate(CurrentDateCreator.currentDateAsString());
+        issue.setModifiedDate(CurrentDateCreator.currentDateAsDate());
         issue.setModifiedBy(user.getEmail());
         issueRepository.save(issue);
 
@@ -194,7 +194,7 @@ public class IssueServiceImpl implements IIssueService {
             throw new NotFoundException();
         }
         issue.setTrack(track);
-        issue.setModifiedDate(CurrentDateCreator.currentDateAsString());
+        issue.setModifiedDate(CurrentDateCreator.currentDateAsDate());
         issue.setModifiedBy(user.getEmail());
         issueRepository.save(issue);
 

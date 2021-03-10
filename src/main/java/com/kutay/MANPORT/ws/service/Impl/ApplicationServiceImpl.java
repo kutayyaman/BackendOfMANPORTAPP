@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -114,7 +115,7 @@ public class ApplicationServiceImpl implements IApplicationService {
         if (application == null) {
             throw new NotFoundException();
         }
-        application.setModifiedDate(CurrentDateCreator.currentDateAsString());
+        application.setModifiedDate(CurrentDateCreator.currentDateAsDate());
         if (currentUser != null) {
             application.setModifiedBy(currentUser.getEmail());
         }
@@ -124,7 +125,7 @@ public class ApplicationServiceImpl implements IApplicationService {
     @Override
     public ApplicationDTO addApplication(ApplicationDTO applicationDTO, User currentUser) {
         Application newApplication = new Application();
-        newApplication.setCreatedDate(CurrentDateCreator.currentDateAsString());
+        newApplication.setCreatedDate(CurrentDateCreator.currentDateAsDate());
         if (currentUser != null) {
             newApplication.setCreatedBy(currentUser.getEmail());
         }
@@ -168,18 +169,29 @@ public class ApplicationServiceImpl implements IApplicationService {
         return setupApplicationDTO;
     }
 
+    @Override
+    public Application findAllByIdAndRowStatusWithApplicationServers(Long id) {
+        return applicationRepository.findAllByIdAndRowStatusWithApplicationServers(id,RowStatus.ACTIVE);
+    }
+
     private ApplicationDTO saveApplication(ApplicationDTO applicationDTO, User currentUser, Application newApplication) {
         try {
             newApplication = setApplicationDTOToApplication(applicationDTO, newApplication);
         } catch (CloneNotSupportedException e) {
             throw new CloneException();
+        } catch (ParseException e) {
+            try {
+                throw new ParseException("Parse exception", e.getErrorOffset());
+            } catch (ParseException parseException) {
+                parseException.printStackTrace();
+            }
         }
 
         applicationRepository.save(newApplication);
         return applicationDTO;
     }
 
-    private Application setApplicationDTOToApplication(ApplicationDTO applicationDTO, Application applicationParam) throws CloneNotSupportedException {
+    private Application setApplicationDTOToApplication(ApplicationDTO applicationDTO, Application applicationParam) throws CloneNotSupportedException, ParseException {
         Application application = (Application) applicationParam.clone();
         application.setId(applicationDTO.getId());
         application.setShortName(applicationDTO.getShortName());
