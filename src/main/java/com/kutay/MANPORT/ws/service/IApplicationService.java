@@ -6,6 +6,7 @@ import com.kutay.MANPORT.ws.domain.User;
 import com.kutay.MANPORT.ws.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -33,4 +34,6 @@ public interface IApplicationService {
     SetupApplicationDTO setupAnApplicationInAServer(SetupApplicationDTO setupApplicationDTO, User currentUser);
 
     Application findAllByIdAndRowStatusWithApplicationServers(Long id);
+
+    ResponseEntity<?> deleteApplicationById(Long id);
 }

@@ -12,6 +12,7 @@ import java.util.List;
 @Entity
 public class Server extends BaseEntity {
     private String name;
+    private String shortCode;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "countryId")
     private Country country;

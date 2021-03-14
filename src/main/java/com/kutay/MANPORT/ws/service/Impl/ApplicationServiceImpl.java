@@ -9,14 +9,18 @@ import com.kutay.MANPORT.ws.repository.JobImplementsRepository;
 import com.kutay.MANPORT.ws.service.*;
 import com.kutay.MANPORT.ws.util.CurrentDateCreator;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class ApplicationServiceImpl implements IApplicationService {
@@ -27,8 +31,10 @@ public class ApplicationServiceImpl implements IApplicationService {
     private final IApplicationCountryService applicationCountryService;
     private final IApplicationServerService applicationServerService;
     private final IJobImplementService jobImplementService;
+    private final MessageSource messageSource;
 
-    public ApplicationServiceImpl(ApplicationRepository applicationRepository, ModelMapper modelMapper, IUserService userService, IServerService serverService, IApplicationCountryService applicationCountryService, IApplicationServerService applicationServerService, JobImplementsRepository jobImplementsRepository, IJobImplementService jobImplementService) {
+
+    public ApplicationServiceImpl(ApplicationRepository applicationRepository, ModelMapper modelMapper, IUserService userService, IServerService serverService, IApplicationCountryService applicationCountryService, IApplicationServerService applicationServerService, JobImplementsRepository jobImplementsRepository, IJobImplementService jobImplementService, MessageSource messageSource) {
         this.applicationRepository = applicationRepository;
         this.modelMapper = modelMapper;
         this.userService = userService;
@@ -36,6 +42,7 @@ public class ApplicationServiceImpl implements IApplicationService {
         this.applicationCountryService = applicationCountryService;
         this.applicationServerService = applicationServerService;
         this.jobImplementService = jobImplementService;
+        this.messageSource = messageSource;
     }
 
     @Override
@@ -171,7 +178,18 @@ public class ApplicationServiceImpl implements IApplicationService {
 
     @Override
     public Application findAllByIdAndRowStatusWithApplicationServers(Long id) {
-        return applicationRepository.findAllByIdAndRowStatusWithApplicationServers(id,RowStatus.ACTIVE);
+        return applicationRepository.findAllByIdAndRowStatusWithApplicationServers(id, RowStatus.ACTIVE);
+    }
+
+    @Override
+    public ResponseEntity<?> deleteApplicationById(Long id) {
+        Application application = applicationRepository.findFirstByIdAndRowStatus(id, RowStatus.ACTIVE);
+        application.setRowStatus(RowStatus.DELETED);
+        applicationRepository.save(application);
+
+        Locale locale = LocaleContextHolder.getLocale();
+        String message = messageSource.getMessage("manportapp.info.app.Deleted", null, locale);
+        return ResponseEntity.ok().body(message);
     }
 
     private ApplicationDTO saveApplication(ApplicationDTO applicationDTO, User currentUser, Application newApplication) {

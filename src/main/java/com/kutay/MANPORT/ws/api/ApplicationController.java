@@ -94,4 +94,10 @@ public class ApplicationController {
     public SetupApplicationDTO setupAnApplicationInAServer(@Valid @RequestBody(required = true) SetupApplicationDTO setupApplicationDTO, @CurrentUser User currentUser) {
         return applicationService.setupAnApplicationInAServer(setupApplicationDTO, currentUser);
     }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "Delete Application", response = ResponseStatus.class)
+    public ResponseEntity<?> deleteApplication(@PathVariable Long id) {
+        return applicationService.deleteApplicationById(id);
+    }
 }
