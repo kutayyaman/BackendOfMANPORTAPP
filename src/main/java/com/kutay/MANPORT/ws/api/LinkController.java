@@ -24,7 +24,13 @@ public class LinkController {
 
     @GetMapping("/{appId}") // /api/link/{appId}
     @ApiOperation(value = "Get Links By appId", response = List.class)
-    public List<?> getJobInterfaceByAppId(@PathVariable Long appId) {
+    public List<?> getAllLinksSortedForManagementPageByAppId(@PathVariable Long appId) {
         return linkService.getAllLinksSortedForManagementPageByAppId(appId);
+    }
+
+    @GetMapping() // /api/link/
+    @ApiOperation(value = "Get Links", response = List.class)
+    public List<?> getLinksGroupedByApplications() {
+        return linkService.getLinksGroupedByApplications();
     }
 }

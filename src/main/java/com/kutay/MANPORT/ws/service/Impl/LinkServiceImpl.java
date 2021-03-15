@@ -1,10 +1,13 @@
 package com.kutay.MANPORT.ws.service.Impl;
 
 import com.kutay.MANPORT.ws.domain.*;
+import com.kutay.MANPORT.ws.dto.ApplicationDTO;
 import com.kutay.MANPORT.ws.dto.LinkDTO;
+import com.kutay.MANPORT.ws.dto.LinkPageItemDTO;
 import com.kutay.MANPORT.ws.models.managementPageLink.*;
 import com.kutay.MANPORT.ws.repository.LinkRepository;
 import com.kutay.MANPORT.ws.service.IApplicationCountryService;
+import com.kutay.MANPORT.ws.service.IApplicationService;
 import com.kutay.MANPORT.ws.service.ILinkService;
 import org.springframework.stereotype.Service;
 
@@ -14,21 +17,38 @@ import java.util.*;
 public class LinkServiceImpl implements ILinkService {
     private final LinkRepository linkRepository;
     private final IApplicationCountryService applicationCountryService;
+    private final IApplicationService applicationService;
 
-    public LinkServiceImpl(LinkRepository linkRepository, IApplicationCountryService applicationCountryService) {
+    public LinkServiceImpl(LinkRepository linkRepository, IApplicationCountryService applicationCountryService, IApplicationService applicationService) {
         this.linkRepository = linkRepository;
         this.applicationCountryService = applicationCountryService;
+        this.applicationService = applicationService;
     }
 
     @Override
-    public List<?> getAllLinksSortedForManagementPageByAppId(Long appId) {
+    public List<ASpecificTypeWithCountriesAndEnvironment> getAllLinksSortedForManagementPageByAppId(Long appId) {
         List<ALinkSpecificTypeWithLinks> specificTypeWithLinks = sortLinksBySpecificTypes(linkRepository.getAllLinksByAppIdAndRowStatus(appId, RowStatus.ACTIVE));
 
         List<ASpecificTypeWithCountriesAndLinks> aSpecificTypeWithCountryAndLinks = sortByCountryName(specificTypeWithLinks, appId);
         return sortByEnvironmentTypes(aSpecificTypeWithCountryAndLinks);
     }
 
-    private List<?> sortByEnvironmentTypes(List<ASpecificTypeWithCountriesAndLinks> param) {
+    @Override
+    public List<LinkPageItemDTO> getLinksGroupedByApplications() {
+        List<Application> applicationList = applicationService.findAll();
+        List<LinkPageItemDTO> result = new ArrayList<>();
+        for (Application application : applicationList) {
+            LinkPageItemDTO linkPageItemDTO = new LinkPageItemDTO();
+            List<ASpecificTypeWithCountriesAndEnvironment> aSpecificTypeWithCountriesAndEnvironments = getAllLinksSortedForManagementPageByAppId(application.getId());
+
+            linkPageItemDTO.setAppShortName(application.getShortName());
+            linkPageItemDTO.setASpecificTypeWithCountriesAndEnvironments(aSpecificTypeWithCountriesAndEnvironments);
+            result.add(linkPageItemDTO);
+        }
+        return result;
+    }
+
+    private List<ASpecificTypeWithCountriesAndEnvironment> sortByEnvironmentTypes(List<ASpecificTypeWithCountriesAndLinks> param) {
         List<ASpecificTypeWithCountriesAndEnvironment> result = new ArrayList<>();
 
         List<LinkEnvironmentType> environmentTypeList = Arrays.asList(LinkEnvironmentType.values().clone());

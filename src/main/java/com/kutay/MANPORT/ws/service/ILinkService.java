@@ -4,4 +4,6 @@ import java.util.List;
 
 public interface ILinkService {
     List<?> getAllLinksSortedForManagementPageByAppId(Long appId);
+
+    List<?> getLinksGroupedByApplications();
 }
