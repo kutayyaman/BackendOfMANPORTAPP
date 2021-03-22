@@ -12,5 +12,6 @@ public class AnAppWithCountriesModel {
     private Long appId;
     private String appName;
     private String highestImpactOfApp;
+    private Boolean lineStopRisk;
     List<ACountryWithServers> aCountryWithServersList = new ArrayList<>();
 }

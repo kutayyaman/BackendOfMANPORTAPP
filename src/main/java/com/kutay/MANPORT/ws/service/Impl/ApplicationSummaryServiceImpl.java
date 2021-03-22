@@ -125,6 +125,7 @@ public class ApplicationSummaryServiceImpl implements IApplicationSummaryService
                 }
                 anAppWithCountriesModel.setAppId(application.getId());
                 anAppWithCountriesModel.setAppName(application.getShortName());
+                anAppWithCountriesModel.setLineStopRisk(application.isLineStopRisk());
                 if (highestImpactTypeOfCountry != null) {
                     aCountryWithServers.setHighestImpactOfCountry(highestImpactTypeOfCountry.toString());
                 }
