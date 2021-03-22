@@ -72,6 +72,7 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
                     "and I.application = :application "
     )
     Page<Issue> findAllByRowStatusAndApplication(RowStatus rowStatus, Application application, Pageable pageable);
+    Page<Issue> findAllByRowStatusAndJobImplement(RowStatus rowStatus, JobImplement jobImplement, Pageable pageable);
 
     /*@Query(
             "update Issue I " +

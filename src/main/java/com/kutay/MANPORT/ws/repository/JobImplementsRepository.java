@@ -9,4 +9,5 @@ import java.util.List;
 public interface JobImplementsRepository extends JpaRepository<JobImplement, Long> {
     int countAllByRowStatus(RowStatus rowStatus);
     List<JobImplement> findAllByRowStatus(RowStatus rowStatus);
+    JobImplement findFirstByIdAndRowStatus(Long id, RowStatus status);
 }

@@ -35,4 +35,6 @@ public interface IIssueService {
     ResponseEntity<?> changeIssueTrackById(Boolean track, Long id, User user);
 
     PageableDTO<?> findAllByAppId(Long appId, Pageable pageable);
+
+    PageableDTO<?> findAllByJobImplementId(Pageable pageable, Long jobImplementId);
 }

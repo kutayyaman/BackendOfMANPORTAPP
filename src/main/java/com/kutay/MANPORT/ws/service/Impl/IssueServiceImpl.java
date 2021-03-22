@@ -1,6 +1,5 @@
 package com.kutay.MANPORT.ws.service.Impl;
 
-import com.kutay.MANPORT.ws.MyAnnotations.CurrentUser;
 import com.kutay.MANPORT.ws.domain.*;
 import com.kutay.MANPORT.ws.dto.IssueDTO;
 import com.kutay.MANPORT.ws.dto.IssuesFilterDTO;
@@ -11,6 +10,7 @@ import com.kutay.MANPORT.ws.error.NotFoundException;
 import com.kutay.MANPORT.ws.repository.IssueRepository;
 import com.kutay.MANPORT.ws.service.IApplicationService;
 import com.kutay.MANPORT.ws.service.IIssueService;
+import com.kutay.MANPORT.ws.service.IJobImplementService;
 import com.kutay.MANPORT.ws.service.IServerService;
 import com.kutay.MANPORT.ws.util.CurrentDateCreator;
 import org.springframework.context.MessageSource;
@@ -19,10 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -34,12 +32,14 @@ public class IssueServiceImpl implements IIssueService {
     private final IApplicationService applicationService;
     private final MessageSource messageSource;
     private final IServerService serverService;
+    private final IJobImplementService jobImplementService;
 
-    public IssueServiceImpl(IssueRepository issueRepository, IApplicationService applicationService, MessageSource messageSource, IServerService serverService) {
+    public IssueServiceImpl(IssueRepository issueRepository, IApplicationService applicationService, MessageSource messageSource, IServerService serverService, IJobImplementService jobImplementService) {
         this.issueRepository = issueRepository;
         this.applicationService = applicationService;
         this.messageSource = messageSource;
         this.serverService = serverService;
+        this.jobImplementService = jobImplementService;
     }
 
     @Override
@@ -210,6 +210,21 @@ public class IssueServiceImpl implements IIssueService {
         Page<Issue> issuePage = issueRepository.findAllByRowStatusAndApplication(RowStatus.ACTIVE, application, pageable);
 
         result = convertToPageableIssueDto(issuePage);
+        return result;
+    }
+
+    @Override
+    public PageableDTO<?> findAllByJobImplementId(Pageable pageable, Long jobImplementId) {
+        PageableDTO<IssueDTO> result;
+
+        JobImplement jobImplement = jobImplementService.findFirstById(jobImplementId);
+        if (jobImplement == null) {
+            throw new NotFoundException();
+        }
+        Page<Issue> issuePage = issueRepository.findAllByRowStatusAndJobImplement(RowStatus.ACTIVE, jobImplement, pageable);
+
+        result = convertToPageableIssueDto(issuePage);
+
         return result;
     }
 

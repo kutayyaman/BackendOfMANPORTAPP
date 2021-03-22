@@ -53,6 +53,12 @@ public class IssueController {
         return issueService.findAllByFilter(pageable, issueFilter);
     }
 
+    @GetMapping()  // "/api/issue?jobImplementId=41"
+    @ApiOperation(value = "Get Issues By JobImplementId", response = PageableDTO.class)
+    public PageableDTO<?> getIssuesByJobImplementId(@RequestParam Long jobImplementId, Pageable pageable) {
+        return issueService.findAllByJobImplementId(pageable, jobImplementId);
+    }
+
     @GetMapping("/{id}")
     @ApiOperation(value = "Get Issue By Id", response = IssueDTO.class)
     public IssueDTO getIssue(@PathVariable Long id) {
