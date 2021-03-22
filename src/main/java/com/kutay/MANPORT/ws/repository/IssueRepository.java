@@ -27,11 +27,11 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
             "select I " +
                     "from Issue I " +
                     "where I.rowStatus = :rowStatus " +
-                    "and I.createdDate>= :dateFrom " +
-                    "and I.createdDate<= :dateTo " +
+                    "and I.createdDate >= :dateFrom " +
+                    "and I.createdDate <= :dateTo " +
                     "and I.application= :application "
     )
-    Page<Issue> findAllByRowStatusAndApplicationAndCreatedDateBetween(RowStatus rowStatus, Application application, String dateFrom, String dateTo, Pageable pageable);
+    Page<Issue> findAllByRowStatusAndApplicationAndCreatedDateBetween(RowStatus rowStatus, Application application, Date dateFrom, Date dateTo, Pageable pageable);
 
     @Query(
             "select I " +
@@ -42,7 +42,7 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
                     "and I.application= :application " +
                     "and I.status= :status"
     )
-    Page<Issue> findAllByRowStatusAndApplicationAndStatusAndCreatedDateBetween(RowStatus rowStatus, Application application, boolean status, String dateFrom, String dateTo, Pageable pageable);
+    Page<Issue> findAllByRowStatusAndApplicationAndStatusAndCreatedDateBetween(RowStatus rowStatus, Application application, boolean status, Date dateFrom, Date dateTo, Pageable pageable);
 
     @Query(
             "select I " +
@@ -52,7 +52,7 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
                     "and I.createdDate<= :dateTo " +
                     "and I.status= :status"
     )
-    Page<Issue> findAllByRowStatusAndStatusAndCreatedDateBetween(RowStatus rowStatus, boolean status, String dateFrom, String dateTo, Pageable pageable);
+    Page<Issue> findAllByRowStatusAndStatusAndCreatedDateBetween(RowStatus rowStatus, boolean status, Date dateFrom, Date dateTo, Pageable pageable);
 
     @Query(
             "select I " +
@@ -61,7 +61,7 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
                     "and I.createdDate>= :dateFrom " +
                     "and I.createdDate<= :dateTo "
     )
-    Page<Issue> findAllByRowStatusAndCreatedDateBetween(RowStatus rowStatus, String dateFrom, String dateTo, Pageable pageable);
+    Page<Issue> findAllByRowStatusAndCreatedDateBetween(RowStatus rowStatus, Date dateFrom, Date dateTo, Pageable pageable);
 
     Issue findFirstByIdAndRowStatus(Long id, RowStatus rowStatus);
 

@@ -22,11 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Service
 public class IssueServiceImpl implements IIssueService {
@@ -64,19 +63,16 @@ public class IssueServiceImpl implements IIssueService {
         Long appId = issuesFilterDTO.getAppId();
         Boolean status = issuesFilterDTO.getStatus();
 
-        String selectedFromDate = issuesFilterDTO.getSelectedFromDate();
-        String selectedToDate = issuesFilterDTO.getSelectedToDate();
-        if (selectedFromDate == null || selectedFromDate.isEmpty()) {
-            selectedFromDate = "1900-01-01";
-        }
-        if (selectedToDate == null || selectedToDate.isEmpty()) {
-            selectedToDate = CurrentDateCreator.currentDateAsString();
-        }
-        selectedFromDate = selectedFromDate.substring(0, 10);
-        selectedToDate = selectedToDate.substring(0, 10);
-        selectedFromDate = addOneDay(selectedFromDate);
-        selectedToDate = addOneDay(selectedToDate);
+        Date selectedFromDate = issuesFilterDTO.getSelectedFromDate();
+        Date selectedToDate = issuesFilterDTO.getSelectedToDate();
 
+        if (selectedFromDate == null) {
+            selectedFromDate = new GregorianCalendar(1900, Calendar.FEBRUARY, 11).getTime();
+        }
+
+        if (selectedToDate == null) {
+            selectedToDate = CurrentDateCreator.currentDateAsDate();
+        }
 
         if (appId != null && status != null) {
             Application application = applicationService.findFirstById(appId);
@@ -97,7 +93,6 @@ public class IssueServiceImpl implements IIssueService {
             result = convertToPageableIssueDto(page);
             return result;
         }
-
 
         Page<Issue> page = issueRepository.findAllByRowStatusAndCreatedDateBetween(RowStatus.ACTIVE, selectedFromDate, selectedToDate, pageable);
         result = convertToPageableIssueDto(page);
@@ -174,7 +169,7 @@ public class IssueServiceImpl implements IIssueService {
     @Override
     public ResponseEntity<?> changeIssueStatusById(Boolean status, Long id, User user) {
         Issue issue = issueRepository.findFirstByIdAndRowStatus(id, RowStatus.ACTIVE);
-        if(issue == null){
+        if (issue == null) {
             throw new NotFoundException();
         }
         issue.setStatus(status);
@@ -190,7 +185,7 @@ public class IssueServiceImpl implements IIssueService {
     @Override
     public ResponseEntity<?> changeIssueTrackById(Boolean track, Long id, User user) {
         Issue issue = issueRepository.findFirstByIdAndRowStatus(id, RowStatus.ACTIVE);
-        if(issue == null){
+        if (issue == null) {
             throw new NotFoundException();
         }
         issue.setTrack(track);
