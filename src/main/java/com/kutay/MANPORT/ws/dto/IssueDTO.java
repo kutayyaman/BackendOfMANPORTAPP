@@ -32,6 +32,8 @@ public class IssueDTO {
     private String jobName;
     @ApiModelProperty(required = true, value = "jobInterfaceId")
     private Long jobInterfaceId;
+    @ApiModelProperty(required = true, value = "jobImplementId")
+    private Long jobImplementId;
     @ApiModelProperty(required = true, value = "countryName")
     private String countryName;
     @ApiModelProperty(required = true, value = "countryId")

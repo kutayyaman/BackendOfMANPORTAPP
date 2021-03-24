@@ -37,4 +37,6 @@ public interface IIssueService {
     PageableDTO<?> findAllByAppId(Long appId, Pageable pageable);
 
     PageableDTO<?> findAllByJobImplementId(Pageable pageable, Long jobImplementId);
+
+    IssueDTO addAnIssue(IssueDTO issueDTO, User currentUser);
 }

@@ -228,6 +228,43 @@ public class IssueServiceImpl implements IIssueService {
         return result;
     }
 
+    @Override
+    public IssueDTO addAnIssue(IssueDTO issueDTO, User currentUser) {
+        Issue issue = IssueDTOToIssue(issueDTO);
+        if (currentUser != null) {
+            issue.setCreatedBy(currentUser.getEmail());
+        }
+        issueRepository.save(issue);
+        return issueDTO;
+    }
+
+    private Issue IssueDTOToIssue(IssueDTO issueDTO) {
+        Issue issue = new Issue();
+        issue.setName(issueDTO.getName());
+        issue.setDescription(issueDTO.getDescription());
+
+        //JobImplement jobImplement = jobImplementService.findFirstById(issueDTO.getJobImplementId());
+        Server server = serverService.findFirstById(issueDTO.getServerId());
+        List<JobImplement> jobImplements = server.getJobImplements();
+
+        JobImplement jobImplement = findJobImplementInAListByJobInterfaceId(jobImplements, issueDTO.getJobInterfaceId());
+        if (jobImplement == null) {
+            throw new JobDoesntExistInServerException(messageSource);
+        }
+
+        issue.setJobImplement(jobImplement);
+        issue.setImpactType(ImpactType.valueOf(issueDTO.getImpact()));
+        issue.setStatus(issueDTO.getStatus());
+        issue.setTrack(issueDTO.getTrack());
+        Application application = applicationService.findFirstById(issueDTO.getAppId());
+        if (application == null) {
+            throw new NotFoundException();
+        }
+        issue.setApplication(application);
+
+        return issue;
+    }
+
     private JobImplement findJobImplementInAListByJobInterfaceId(List<JobImplement> jobImplements, Long jobInterfaceId) {
         for (JobImplement jobImplement : jobImplements) {
             JobInterface jobInterface = jobImplement.getJobInterface();

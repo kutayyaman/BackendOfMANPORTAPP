@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
@@ -108,5 +109,12 @@ public class IssueController {
     @ApiOperation(value = "Get Issues By AppId", response = PageableDTO.class)
     public PageableDTO<?> getByAppId(@PathVariable Long id, Pageable pageable) {
         return issueService.findAllByAppId(id, pageable);
+    }
+
+    // /api/issue
+    @PostMapping()
+    @ApiOperation(value = "Add Issue Operation", response = IssueDTO.class)
+    public IssueDTO addIssue(@Valid @RequestBody(required = true) IssueDTO issueDTO, @CurrentUser User currentUser) {
+        return issueService.addAnIssue(issueDTO, currentUser);
     }
 }
