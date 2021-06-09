@@ -42,11 +42,14 @@ public class UserServiceImpl implements IUserService {
     public ResponseEntity<?> save(UserDTO userDTO) {
         setCreatedDateOfUserDTO(userDTO);
         encodeThePasswordOfUserDTO(userDTO);
-        Team team = new Team();
-        team.setId(userDTO.getTeamId());
 
         User user = modelMapper.map(userDTO, User.class);
-        user.setTeam(team);
+
+        Team team = new Team();
+        if(userDTO.getTeamId()!=null){
+            team.setId(userDTO.getTeamId());
+            user.setTeam(team);
+        }
 
         userRepository.save(user);
 

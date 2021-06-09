@@ -243,6 +243,15 @@ public class WsApplication {
                 if (userService.findByEmail("yamankutay1@gmail.com") == null) {
                     List<Team> teams = teamRepository.findAllByRowStatus(RowStatus.ACTIVE);
 
+                    UserDTO user4 = new UserDTO();
+                    user4.setEmail("maralyurdakul@gmail.com");
+                    user4.setPassword("12345678");
+                    user4.setName("maral");
+                    user4.setSurname("yurdakul");
+                    user4.setTeamId(teams.get(1).getId());
+                    user4.setTeamName(teams.get(1).getName());
+                    userService.save(user4);
+
                     UserDTO user = new UserDTO();
                     user.setEmail("yamankutay1@gmail.com");
                     user.setPassword("12345678");
@@ -269,6 +278,7 @@ public class WsApplication {
                     user3.setTeamId(teams.get(0).getId());
                     user3.setTeamName(teams.get(0).getName());
                     userService.save(user3);
+
                 }
             }
 
