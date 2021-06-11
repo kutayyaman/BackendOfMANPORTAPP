@@ -1,19 +1,17 @@
 package com.kutay.MANPORT.ws.api;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.kutay.MANPORT.ws.MyAnnotations.CurrentUser;
 import com.kutay.MANPORT.ws.domain.ImpactType;
 import com.kutay.MANPORT.ws.domain.User;
 import com.kutay.MANPORT.ws.dto.*;
-import com.kutay.MANPORT.ws.error.JobDoesntExistInServerException;
 import com.kutay.MANPORT.ws.service.IIssueService;
 import com.kutay.MANPORT.ws.util.ApiPaths;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,10 +26,12 @@ public class IssueController {
 
     private final IIssueService issueService;
     private final MessageSource messageSource;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public IssueController(IIssueService issueService, MessageSource messageSource) {
+    public IssueController(IIssueService issueService, MessageSource messageSource, SimpMessagingTemplate messagingTemplate) {
         this.issueService = issueService;
         this.messageSource = messageSource;
+        this.messagingTemplate = messagingTemplate;
     }
 
 
@@ -115,6 +115,7 @@ public class IssueController {
     @PostMapping()
     @ApiOperation(value = "Add Issue Operation", response = IssueDTO.class)
     public IssueDTO addIssue(@Valid @RequestBody(required = true) IssueDTO issueDTO, @CurrentUser User currentUser) {
+        messagingTemplate.convertAndSend("/issueTrackingBroker",issueDTO);
         return issueService.addAnIssue(issueDTO, currentUser);
     }
 }

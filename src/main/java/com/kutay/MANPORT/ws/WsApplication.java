@@ -257,8 +257,8 @@ public class WsApplication {
                     user.setPassword("12345678");
                     user.setName("kutay");
                     user.setSurname("yaman");
-                    user.setTeamId(teams.get(0).getId());
-                    user.setTeamName(teams.get(0).getName());
+                    user.setTeamId(teams.get(1).getId());
+                    user.setTeamName(teams.get(1).getName());
                     userService.save(user);
 
                     UserDTO user2 = new UserDTO();
@@ -266,8 +266,8 @@ public class WsApplication {
                     user2.setPassword("12345678");
                     user2.setName("batu");
                     user2.setSurname("gokalp");
-                    user2.setTeamName(teams.get(1).getName());
-                    user2.setTeamId(teams.get(1).getId());
+                    user2.setTeamName(teams.get(0).getName());
+                    user2.setTeamId(teams.get(0).getId());
                     userService.save(user2);
 
                     UserDTO user3 = new UserDTO();
