@@ -26,12 +26,10 @@ public class IssueController {
 
     private final IIssueService issueService;
     private final MessageSource messageSource;
-    private final SimpMessagingTemplate messagingTemplate;
 
-    public IssueController(IIssueService issueService, MessageSource messageSource, SimpMessagingTemplate messagingTemplate) {
+    public IssueController(IIssueService issueService, MessageSource messageSource) {
         this.issueService = issueService;
         this.messageSource = messageSource;
-        this.messagingTemplate = messagingTemplate;
     }
 
 
@@ -115,7 +113,6 @@ public class IssueController {
     @PostMapping()
     @ApiOperation(value = "Add Issue Operation", response = IssueDTO.class)
     public IssueDTO addIssue(@Valid @RequestBody(required = true) IssueDTO issueDTO, @CurrentUser User currentUser) {
-        messagingTemplate.convertAndSend("/issueTrackingBroker",issueDTO);
         return issueService.addAnIssue(issueDTO, currentUser);
     }
 }

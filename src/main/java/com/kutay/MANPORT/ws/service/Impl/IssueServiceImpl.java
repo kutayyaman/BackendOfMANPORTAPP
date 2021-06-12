@@ -1,10 +1,7 @@
 package com.kutay.MANPORT.ws.service.Impl;
 
 import com.kutay.MANPORT.ws.domain.*;
-import com.kutay.MANPORT.ws.dto.IssueDTO;
-import com.kutay.MANPORT.ws.dto.IssuesFilterDTO;
-import com.kutay.MANPORT.ws.dto.PageableDTO;
-import com.kutay.MANPORT.ws.dto.TopIssueDTO;
+import com.kutay.MANPORT.ws.dto.*;
 import com.kutay.MANPORT.ws.error.JobDoesntExistInServerException;
 import com.kutay.MANPORT.ws.error.NotFoundException;
 import com.kutay.MANPORT.ws.repository.IssueRepository;
@@ -18,6 +15,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -33,13 +31,15 @@ public class IssueServiceImpl implements IIssueService {
     private final MessageSource messageSource;
     private final IServerService serverService;
     private final IJobImplementService jobImplementService;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public IssueServiceImpl(IssueRepository issueRepository, IApplicationService applicationService, MessageSource messageSource, IServerService serverService, IJobImplementService jobImplementService) {
+    public IssueServiceImpl(IssueRepository issueRepository, IApplicationService applicationService, MessageSource messageSource, IServerService serverService, IJobImplementService jobImplementService, SimpMessagingTemplate messagingTemplate) {
         this.issueRepository = issueRepository;
         this.applicationService = applicationService;
         this.messageSource = messageSource;
         this.serverService = serverService;
         this.jobImplementService = jobImplementService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @Override
@@ -235,6 +235,13 @@ public class IssueServiceImpl implements IIssueService {
             issue.setCreatedBy(currentUser.getEmail());
         }
         issueRepository.save(issue);
+
+        Application application = issue.getApplication();
+        AlarmAudioDTO alarmAudioDTO = new AlarmAudioDTO();
+        alarmAudioDTO.setLineStopRisk(application.isLineStopRisk());
+        alarmAudioDTO.setImpact(issueDTO.getImpact());
+        messagingTemplate.convertAndSend("/issueTrackingBroker",alarmAudioDTO);
+
         return issueDTO;
     }
 
